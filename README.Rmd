@@ -26,20 +26,44 @@ devtools::install_github("HaemAalborg/loamr")
 ```
 
 # Overview
-The main function of loamr is..
+The package includes some data from Jones, this is in wide format, so we transform this to a long format as the 'LOAM' function uses:
 
 ```{r}
 library(loamr)
 data(Jones)
 head(Jones)
+
+Jones <- Jones %>%
+  mutate(subject = 1:nrow(.)) %>%
+  gather(reader, value, -subject)
 ```
+
+Ww can calculate the Limit of Agreements and confidence intervals
+
 ```{r}
 la <- LOAM(Jones)
 la
 ```
 
-```{r}
+The S3 class includes a generic plotting function made with ggplot2
+
+```{r fig.height=4, fig.width=10}
 plot(la)
+```
+
+## Simulation of Data
+The package also includes a function to simulate data (which is already in long format)
+
+```{r}
+sim <- simMD(subjects=80, readers=4)
+la2 <- LOAM(sim)
+la2
+```
+
+We can plot this, and as the plotting is done by ggplot2 it's easy to change elements of the plot, like the title:
+
+```{r fig.height=4, fig.width=10}
+plot(la2, CI="asym") + labs(title="Simulated Data")
 ```
 
 
