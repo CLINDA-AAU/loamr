@@ -16,10 +16,14 @@
 #' @export
 #' @import dplyr tidyr magrittr
 
-LOAM <- function(data) {
+LOAM <- function(data, CI = 0.95, CICI = 0.95) {
 
-  m <- length(unique(data$reader))
-  n <- length(unique(data$subject))
+  z <- abs(qnorm((1-CI)/2))
+  up <- 1-(1-CICI)/2
+  lo <- (1-CICI)/2
+
+  readers <- length(unique(data$reader))
+  subjects <- length(unique(data$subject))
 
   da <- data %>%
     group_by(reader) %>%
@@ -32,39 +36,48 @@ LOAM <- function(data) {
 
 
   ## Calculate S:
-  J.S <- sqrt(sum((da$value - da$subjectMean - da$readerMean + da$valueMean)^2)/((m-1)*(n-1)))
-  J.LoAM <- c(-1, 1) * 1.96 * J.S
+  J.S <- sqrt(sum((da$value - da$subjectMean - da$readerMean + da$valueMean)^2)/((readers-1)*(subjects-1)))
+  J.LoAM <- c(-1, 1) * z * J.S
 
-  B.S <- sqrt(sum((da$value - da$subjectMean)^2)/(m*n))
-  B.LoAM <- c(-1, 1) * 1.96 * B.S
+  B.S <- sqrt(sum((da$value - da$subjectMean)^2)/(readers*subjects))
+  B.LoAM <- c(-1, 1) * z * B.S
 
   SSE <- sum((da$value - da$subjectMean - da$readerMean + da$valueMean)^2)
   SSA <- sum((da$readerMean - da$valueMean)^2)
 
-  sigma2e <- SSE/((m-1)*(n-1))
-  sigma2A <- (1/m) * (SSA/(n-1) - SSE/((m-1)*(n-1)))
+  sigma2e <- SSE / ((readers - 1) * (subjects - 1))
+  sigma2A <- (1 / readers) * (SSA / (subjects - 1) - SSE / ((readers - 1) * (subjects - 1)))
 
-  SE1 <- (n-1)*(sigma2e + sigma2A)/n
-  SE2 <- sum((da$value - da$subjectMean)^2)/(m*n)
+  SE1 <- (subjects - 1) * (sigma2e + sigma2A) / subjects
+  SE2 <- sum((da$value - da$subjectMean)^2) / (readers * subjects)
 
-  result <- list(da, J.LoAM, B.LoAM, SE1, SE2)
+
+
+  lB <- 1 - 1 / qf(up,                  (readers - 1), Inf)
+  hB <- 1     / qf(lo,                  (readers - 1), Inf) - 1
+  le <- 1 - 1 / qf(up, (subjects - 1) * (readers - 1), Inf)
+  he <- 1     / qf(lo, (subjects - 1) * (readers - 1), Inf) - 1
+
+  H <- sqrt(hB^2 * SSA^2 + he^2 * SSE^2)
+  L <- sqrt(lB^2 * SSA^2 + le^2 * SSE^2)
+
+  das <- data.frame(name     = c("Jones", "Borgbjerg"),
+                    lower    = c(J.LoAM[1],       B.LoAM[1]),
+                    llower   = c(J.LoAM[1] - SE1, (1.96 * sqrt(c(SSA + SSE + H) / (subjects * readers))*-1)),
+                    ulower   = c(J.LoAM[1] + SE1, (1.96 * sqrt(c(SSA + SSE - L) / (subjects * readers))*-1)),
+                    upper    = c(J.LoAM[2],       B.LoAM[2]),
+                    lupper   = c(J.LoAM[2] - SE1, (1.96 * sqrt(c(SSA + SSE - L) / (subjects * readers)))),
+                    uupper   = c(J.LoAM[2] + SE1, (1.96 * sqrt(c(SSA + SSE + H) / (subjects * readers)))),
+                    outliers = c(round((sum(abs(da$value - da$subjectMean) > J.LoAM[2]) / (subjects * readers)) * 100,2),
+                                 round((sum(abs(da$value - da$subjectMean) > B.LoAM[2]) / (subjects * readers)) * 100,2))
+                    )
+
+  result <- list(da, J.LoAM, B.LoAM, SE1, SE2, das)
   class(result) <- "loamobject"
 
   return(result)
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

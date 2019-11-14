@@ -44,10 +44,10 @@ LOAM(Jones)
 #> The data has 195 measurements from 39 individuals by 5 readers
 #> 
 #> Jones' LoAM
-#> [1] -1.14755  1.14755
+#> [1] -1.147529  1.147529
 #> 
 #> Borgbjerg's LoAM
-#> [1] -1.142867  1.142867
+#> [1] -1.142846  1.142846
 #> 
 #> Standard Error: 0.34
 #> Maybe some text here also...
@@ -56,7 +56,7 @@ LOAM(Jones)
 The S3 class includes a generic plotting function made with ggplot2
 
 ``` r
-plot(LOAM(Jones))
+grid.arrange(plot(LOAM(Jones), CI="sym"), plot(LOAM(Jones), CI="asym"), nrow=1)
 ```
 
 ![](man/figures/README-unnamed-chunk-5-1.png)<!-- -->
@@ -74,10 +74,10 @@ LOAM(sim)
 #> The data has 320 measurements from 80 individuals by 4 readers
 #> 
 #> Jones' LoAM
-#> [1] -1.334906  1.334906
+#> [1] -1.334881  1.334881
 #> 
 #> Borgbjerg's LoAM
-#> [1] -1.176248  1.176248
+#> [1] -1.176226  1.176226
 #> 
 #> Standard Error: 0.3601518
 #> Maybe some text here also...
