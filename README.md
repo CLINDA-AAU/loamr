@@ -38,8 +38,7 @@ Jones <- Jones %>%
 Ww can calculate the Limit of Agreements and confidence intervals
 
 ``` r
-la <- LOAM(Jones)
-la
+LOAM(Jones)
 #> Output of this type of function... somthing
 #> 
 #> The data has 195 measurements from 39 individuals by 5 readers
@@ -57,7 +56,7 @@ la
 The S3 class includes a generic plotting function made with ggplot2
 
 ``` r
-plot(la)
+plot(LOAM(Jones))
 ```
 
 ![](man/figures/README-unnamed-chunk-5-1.png)<!-- -->
@@ -69,19 +68,18 @@ in long format)
 
 ``` r
 sim <- simMD(subjects=80, readers=4)
-la2 <- LOAM(sim)
-la2
+LOAM(sim)
 #> Output of this type of function... somthing
 #> 
 #> The data has 320 measurements from 80 individuals by 4 readers
 #> 
 #> Jones' LoAM
-#> [1] -1.440897  1.440897
+#> [1] -1.334906  1.334906
 #> 
 #> Borgbjerg's LoAM
-#> [1] -1.253784  1.253784
+#> [1] -1.176248  1.176248
 #> 
-#> Standard Error: 0.4091976
+#> Standard Error: 0.3601518
 #> Maybe some text here also...
 ```
 
@@ -89,7 +87,7 @@ We can plot this, and as the plotting is done by ggplot2 it’s easy to
 change elements of the plot, like the title:
 
 ``` r
-plot(la2, CI="asym") + labs(title="Simulated Data")
+plot(LOAM(sim), CI="asym") + labs(title="Simulated Data")
 ```
 
 ![](man/figures/README-unnamed-chunk-7-1.png)<!-- -->
