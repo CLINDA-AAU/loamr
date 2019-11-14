@@ -1,0 +1,21 @@
+#' Simulated data jones
+#'
+#' @docType data
+#'
+#' @usage data(Jones)
+#'
+#' @format A data frame with 9882 rows and 7 variables:
+#'
+#' @keywords datasets
+#'
+#' @references
+#' \insertRef{?????}{loamr}
+#'
+#' @source \href{http://?????.html}{Blog}
+#'
+#' @examples
+#' data(Jones)
+#'
+#'
+#' @importFrom Rdpack reprompt
+"Jones"
