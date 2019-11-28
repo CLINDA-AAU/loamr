@@ -37,7 +37,7 @@ head(Jones)
 
 Jones <- Jones %>%
   mutate(subject = 1:nrow(.)) %>%
-  gather(reader, value, -subject)
+  gather(observer, value, -subject)
 ```
 
 Ww can calculate the Limit of Agreements and confidence intervals
@@ -56,7 +56,7 @@ grid.arrange(plot(LOAM(Jones), CI="sym"), plot(LOAM(Jones), CI="asym"), nrow=1)
 The package also includes a function to simulate data (which is already in long format)
 
 ```{r}
-sim <- simMD(subjects=80, readers=4)
+sim <- simMD(subjects=80, observers=4)
 LOAM(sim)
 ```
 
@@ -71,3 +71,15 @@ plot(LOAM(sim), CI="asym") + labs(title="Simulated Data")
 
 1. Jones'
 2. Borgbjerg's
+
+
+
+
+
+
+
+
+
+
+
+

@@ -45,10 +45,10 @@ LOAM <- function(data, CI = 0.95, CICI = 0.95) {
   SSE <- sum((da$value - da$subjectMean - da$readerMean + da$valueMean)^2)
   SSA <- sum((da$readerMean - da$valueMean)^2)
 
-  sigma2e <- SSE / ((readers - 1) * (subjects - 1))
+  sigma2E <- SSE / ((readers - 1) * (subjects - 1))
   sigma2A <- (1 / readers) * (SSA / (subjects - 1) - SSE / ((readers - 1) * (subjects - 1)))
 
-  SE1 <- (subjects - 1) * (sigma2e + sigma2A) / subjects
+  SE1 <- (subjects - 1) * (sigma2E + sigma2A) / subjects
   SE2 <- sum((da$value - da$subjectMean)^2) / (readers * subjects)
 
 
@@ -72,7 +72,9 @@ LOAM <- function(data, CI = 0.95, CICI = 0.95) {
                                  round((sum(abs(da$value - da$subjectMean) > B.LoAM[2]) / (subjects * readers)) * 100,2))
                     )
 
-  result <- list(da, J.LoAM, B.LoAM, SE1, SE2, das)
+  parts <- data.frame(sigma2E, sigma2A, SE1, SE2, SSE, SSA, L, H, CI)
+
+  result <- list(data = da, estimates = das, parts = parts)
   class(result) <- "loamobject"
 
   return(result)

@@ -1,0 +1,220 @@
+---
+title: "Jens Borgbjerg data LOAMR"
+author: "Lars Nielsen"
+date: "28/11/2019"
+output:
+  html_document:
+    code_folding: hide
+    theme: flatly
+    toc: yes
+    toc_float:
+      collapsed: no
+---
+
+# Data
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(loamr)
+library(knitr)
+library(kableExtra)
+#devtools::install_github("thomasp85/patchwork")
+library(patchwork)
+```
+
+```{r message=FALSE, warning=FALSE}
+ITI <- read_csv("data/raw/csvITI.csv", col_names = FALSE)
+LTL <- read_csv("data/raw/csvLTL.csv", col_names = FALSE)
+OTO <- read_csv("data/raw/csvOTO.csv", col_names = FALSE)
+
+ITI <- ITI %>%
+  mutate(subject = 1:nrow(.)) %>%
+  gather(observer, value, -subject) %>% 
+  mutate(observer = as.numeric(str_extract(observer, pattern = "[:digit:]+")))
+
+LTL <- LTL %>%
+  mutate(subject = 1:nrow(.)) %>%
+  gather(observer, value, -subject) %>% 
+  mutate(observer = as.numeric(str_extract(observer, pattern = "[:digit:]+")))
+
+OTO <- OTO %>%
+  mutate(subject = 1:nrow(.)) %>%
+  gather(observer, value, -subject) %>% 
+  mutate(observer = as.numeric(str_extract(observer, pattern = "[:digit:]+")))
+
+head(ITI)
+```
+
+
+
+
+
+
+# Mean and SD
+
+```{r}
+a <- ITI %>% group_by(observer) %>% 
+  summarize(mean = mean(value),
+            sd = sd(value))
+
+b <- LTL %>% group_by(observer) %>% 
+  summarize(mean = mean(value),
+            sd = sd(value))
+
+c <- OTO %>% group_by(observer) %>% 
+  summarize(mean = mean(value),
+            sd = sd(value))
+
+cbind(a,b,c) %>% kable() %>% 
+  kable_styling(c("condensed","bordered","striped", "hover"), full_width = F) %>% 
+  add_header_above(c("ITI" = 3, "LTI" = 3, "OTO" = 3)) %>% 
+  add_header_above(c("Data grouped by observer"=9))
+```
+
+
+
+```{r}
+a <- ITI %>% group_by(subject) %>% 
+  summarize(mean = mean(value),
+            sd = sd(value))
+
+b <- LTL %>% group_by(subject) %>% 
+  summarize(mean = mean(value),
+            sd = sd(value))
+
+c <- OTO %>% group_by(subject) %>% 
+  summarize(mean = mean(value),
+            sd = sd(value))
+
+cbind(a,b,c) %>% kable() %>% 
+  kable_styling(c("condensed","bordered","striped", "hover"), full_width = F) %>% 
+  add_header_above(c("ITI" = 3, "LTI" = 3, "OTO" = 3)) %>% 
+  add_header_above(c("Data grouped by subject"=9))
+```
+
+
+# LOAM
+
+```{r results='asis'}
+print(LOAM(ITI))
+LOAM(LTL)
+LOAM(OTO)
+```
+
+
+## Symmetric CI
+```{r fig.height=4, fig.width=12}
+plot(LOAM(ITI), CI = "sym") + labs(title="ITI") +
+plot(LOAM(LTL), CI = "sym") + labs(title="LTL") +
+plot(LOAM(OTO), CI = "sym") + labs(title="OTO") 
+```
+
+
+
+
+## Asymmetric CI
+
+```{r fig.height=4, fig.width=12}
+plot(LOAM(ITI), CI = "asym") + labs(title="ITI") +
+plot(LOAM(LTL), CI = "asym") + labs(title="LTL") +
+plot(LOAM(OTO), CI = "asym") + labs(title="OTO")
+```
+
+
+
+
+```{r fig.height=8, fig.width=20}
+d <- rbind(ITI %>% mutate(method="ITI"),
+           LTL %>% mutate(method="LTL"),
+           OTO %>% mutate(method="OTO"))
+
+d %>% filter(observer==1) %>% mutate(observer = method) %>% LOAM() %>% plot() + labs(title="observer 1") +
+d %>% filter(observer==2) %>% mutate(observer = method) %>% LOAM() %>% plot() + labs(title="observer 2") +
+d %>% filter(observer==3) %>% mutate(observer = method) %>% LOAM() %>% plot() + labs(title="observer 3") +
+d %>% filter(observer==4) %>% mutate(observer = method) %>% LOAM() %>% plot() + labs(title="observer 4") +
+d %>% filter(observer==5) %>% mutate(observer = method) %>% LOAM() %>% plot() + labs(title="observer 5") +
+d %>% filter(observer==6) %>% mutate(observer = method) %>% LOAM() %>% plot() + labs(title="observer 6") +
+d %>% filter(observer==7) %>% mutate(observer = method) %>% LOAM() %>% plot() + labs(title="observer 7") +
+d %>% filter(observer==8) %>% mutate(observer = method) %>% LOAM() %>% plot() + labs(title="observer 8") +
+d %>% filter(observer==9) %>% mutate(observer = method) %>% LOAM() %>% plot() + labs(title="observer 9") +
+d %>% filter(observer==10) %>% mutate(observer = method) %>% LOAM() %>% plot() + labs(title="observer 10") +
+d %>% filter(observer==11) %>% mutate(observer = method) %>% LOAM() %>% plot() + labs(title="observer 11") +
+d %>% filter(observer==12) %>% mutate(observer = method) %>% LOAM() %>% plot() + labs(title="observer 12") +
+d %>% filter(observer==13) %>% mutate(observer = method) %>% LOAM() %>% plot() + labs(title="observer 13") +
+d %>% filter(observer==14) %>% mutate(observer = method) %>% LOAM() %>% plot() + labs(title="observer 14") +
+d %>% filter(observer==15) %>% mutate(observer = method) %>% LOAM() %>% plot() + labs(title="observer 15") +
+d %>% filter(observer==16) %>% mutate(observer = method) %>% LOAM() %>% plot() + labs(title="observer 16") +
+d %>% filter(observer==17) %>% mutate(observer = method) %>% LOAM() %>% plot() + labs(title="observer 17") +
+d %>% filter(observer==18) %>% mutate(observer = method) %>% LOAM() %>% plot() + labs(title="observer 18") + 
+  plot_layout(guides="collect", nrow = 3)
+
+
+```
+
+
+
+
+
+
+# Sigma values
+
+
+```{r}
+
+sqrt(LOAM(ITI)$parts$sigma2A + LOAM(ITI)$parts$sigma2E)
+sqrt(LOAM(ITI)$parts$sigma2E)
+
+
+
+
+LOAM(LTL)
+LOAM(OTO)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
