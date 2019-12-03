@@ -1,0 +1,240 @@
+---
+title: "Jens Borgbjerg data LOAMR"
+author: "Lars Nielsen"
+date: "28/11/2019"
+output:
+  html_document:
+    code_folding: hide
+    theme: flatly
+    toc: yes
+    toc_float:
+      collapsed: no
+---
+
+# Data
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(loamr)
+library(knitr)
+library(kableExtra)
+#devtools::install_github("thomasp85/patchwork")
+library(patchwork)
+```
+
+```{r message=FALSE, warning=FALSE}
+ITI <- read_csv("csvITI.csv", col_names = FALSE)
+LTL <- read_csv("csvLTL.csv", col_names = FALSE)
+OTO <- read_csv("csvOTO.csv", col_names = FALSE)
+
+ITI <- ITI %>%
+  mutate(subject = 1:nrow(.)) %>%
+  gather(observer, value, -subject) %>% 
+  mutate(observer = as.numeric(str_extract(observer, pattern = "[:digit:]+")))
+
+LTL <- LTL %>%
+  mutate(subject = 1:nrow(.)) %>%
+  gather(observer, value, -subject) %>% 
+  mutate(observer = as.numeric(str_extract(observer, pattern = "[:digit:]+")))
+
+OTO <- OTO %>%
+  mutate(subject = 1:nrow(.)) %>%
+  gather(observer, value, -subject) %>% 
+  mutate(observer = as.numeric(str_extract(observer, pattern = "[:digit:]+")))
+```
+
+
+
+
+
+
+# Mean and SD
+
+```{r}
+a <- ITI %>% group_by(observer) %>% 
+  summarize(mean = mean(value),
+            sd = sd(value))
+
+b <- LTL %>% group_by(observer) %>% 
+  summarize(mean = mean(value),
+            sd = sd(value))
+
+c <- OTO %>% group_by(observer) %>% 
+  summarize(mean = mean(value),
+            sd = sd(value))
+
+cbind(a,b,c) %>% kable() %>% 
+  kable_styling(c("condensed","bordered","striped", "hover"), full_width = F) %>% 
+  add_header_above(c("ITI" = 3, "LTI" = 3, "OTO" = 3)) %>% 
+  add_header_above(c("Data grouped by observer"=9))
+```
+
+
+
+```{r}
+a <- ITI %>% group_by(subject) %>% 
+  summarize(mean = mean(value),
+            sd = sd(value))
+
+b <- LTL %>% group_by(subject) %>% 
+  summarize(mean = mean(value),
+            sd = sd(value))
+
+c <- OTO %>% group_by(subject) %>% 
+  summarize(mean = mean(value),
+            sd = sd(value))
+
+cbind(a,b,c) %>% kable() %>% 
+  kable_styling(c("condensed","bordered","striped", "hover"), full_width = F) %>% 
+  add_header_above(c("ITI" = 3, "LTI" = 3, "OTO" = 3)) %>% 
+  add_header_above(c("Data grouped by subject"=9))
+```
+
+# Jones
+
+```{r fig.height=4, fig.width=9}
+data("Jones")
+
+Jones <- Jones %>%
+  mutate(subject = 1:nrow(.)) %>%
+  gather(observer, value, -subject)
+
+p1 <- plot(LOAM(Jones), CI="sym")  + scale_y_continuous(limits = c(-3,2)) + labs(title="Symmetric CI", subtitle=NULL) +
+      plot(LOAM(Jones), CI="asym") + scale_y_continuous(limits = c(-3,2)) + labs(title="Asymmetric CI", subtitle=NULL)
+p1
+```
+
+
+
+
+
+
+
+
+# LOAM
+
+```{r results='asis'}
+LOAM(ITI)
+```
+
+
+## Symmetric CI
+```{r fig.height=4, fig.width=12}
+p2 <- plot(LOAM(ITI), CI = "sym") + scale_y_continuous(limits = c(-7.5,10.5)) + labs(title="ITI", subtitle=NULL) +
+      plot(LOAM(LTL), CI = "sym") + scale_y_continuous(limits = c(-7.5,10.5)) + labs(title="LTL", subtitle=NULL) +
+      plot(LOAM(OTO), CI = "sym") + scale_y_continuous(limits = c(-7.5,10.5)) + labs(title="OTO", subtitle=NULL)
+p2
+```
+
+
+
+
+## Asymmetric CI
+
+```{r fig.height=4, fig.width=12}
+p3 <- plot(LOAM(ITI), CI = "asym") + scale_y_continuous(limits = c(-7.5,10.5)) + labs(title="ITI", subtitle=NULL) +
+      plot(LOAM(LTL), CI = "asym") + scale_y_continuous(limits = c(-7.5,10.5)) + labs(title="LTL", subtitle=NULL) +
+      plot(LOAM(OTO), CI = "asym") + scale_y_continuous(limits = c(-7.5,10.5)) + labs(title="OTO", subtitle=NULL)
+p3
+```
+
+
+
+
+
+
+
+
+
+
+
+# Sigma values
+
+
+```{r}
+IT <- LOAM(ITI)
+LT <- LOAM(LTL)
+OT <- LOAM(OTO)
+
+fm <- function(x) {format(round(x, 3), nsmall = 3)}
+
+loam <- c(fm(IT$estimates$upper[1]),
+          fm(LT$estimates$upper[1]),
+          fm(OT$estimates$upper[1]))
+
+symetrical <- c(paste0("(", fm(IT$estimates$lupper[1]), ", ", fm(IT$estimates$uupper[1]), ")"),
+                paste0("(", fm(LT$estimates$lupper[1]), ", ", fm(LT$estimates$uupper[1]), ")"),
+                paste0("(", fm(OT$estimates$lupper[1]), ", ", fm(OT$estimates$uupper[1]), ")"))
+
+asymetrical <- c(paste0("(", fm(IT$estimates$lupper[2]), ", ", fm(IT$estimates$uupper[2]), ")"),
+                 paste0("(", fm(LT$estimates$lupper[2]), ", ", fm(LT$estimates$uupper[2]), ")"),
+                 paste0("(", fm(OT$estimates$lupper[2]), ", ", fm(OT$estimates$uupper[2]), ")"))
+
+icc <- c(fm(IT$parts$ICC),
+         fm(LT$parts$ICC),
+         fm(OT$parts$ICC))
+
+icc_ci <- c(paste0("(", fm(IT$intervals$ICC_CI[1]), ", ", fm(IT$intervals$ICC_CI[2]), ")"),
+            paste0("(", fm(LT$intervals$ICC_CI[1]), ", ", fm(LT$intervals$ICC_CI[2]), ")"),
+            paste0("(", fm(OT$intervals$ICC_CI[1]), ", ", fm(OT$intervals$ICC_CI[2]), ")"))
+
+df <- as.data.frame(rbind(loam, symetrical, asymetrical, icc, icc_ci))
+
+names(df) <- c("ITI","LTL","OTO")
+
+kable(df )%>% 
+  kable_styling(c("condensed","bordered","striped", "hover"), full_width = F) %>% 
+  add_header_above(c("Data" = 4))
+```
+
+
+
+```{r}
+ggsave(p1, filename = "p1.tiff", dpi = 600, height = 4,width = 9)
+ggsave(p2, filename = "p2.tiff", dpi = 600, height = 4,width = 12)
+ggsave(p3, filename = "p3.tiff", dpi = 600, height = 4,width = 12)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

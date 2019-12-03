@@ -32,25 +32,25 @@ head(Jones)
 
 Jones <- Jones %>%
   mutate(subject = 1:nrow(.)) %>%
-  gather(reader, value, -subject)
+  gather(observer, value, -subject)
 ```
 
 Ww can calculate the Limit of Agreements and confidence intervals
 
 ``` r
 LOAM(Jones)
-#> Output of this type of function... somthing
+#> Limits of agreement with the mean for multiple observers
 #> 
-#> The data has 195 measurements from 39 individuals by 5 readers
+#> The data has 195 observations from 39 individuals by 5 observers with 1 measurements
 #> 
-#> Jones' LoAM
-#> [1] -1.147529  1.147529
+#> LoAM +/-: (95% CI)
 #> 
-#> Borgbjerg's LoAM
-#> [1] -1.142846  1.142846
+#> Symmetric CI:  1.143 (1.340, 0.946)
+#> Asymmetric CI: 1.143 (1.831, 1.020)
 #> 
-#> Standard Error: 0.34
-#> Maybe some text here also...
+#> ICC:           0.837 (0.744, 0.904)
+#> SigmaB:        0.287 (0.169, 0.404)
+#> SigmaE:        0.585
 ```
 
 The S3 class includes a generic plotting function made with ggplot2
@@ -67,20 +67,20 @@ The package also includes a function to simulate data (which is already
 in long format)
 
 ``` r
-sim <- simMD(subjects=80, readers=4)
+sim <- simMD(subjects=80, observers=4)
 LOAM(sim)
-#> Output of this type of function... somthing
+#> Limits of agreement with the mean for multiple observers
 #> 
-#> The data has 320 measurements from 80 individuals by 4 readers
+#> The data has 320 observations from 80 individuals by 4 observers with 1 measurements
 #> 
-#> Jones' LoAM
-#> [1] -1.334881  1.334881
+#> LoAM +/-: (95% CI)
 #> 
-#> Borgbjerg's LoAM
-#> [1] -1.176226  1.176226
+#> Symmetric CI:  1.176 (1.286, 1.066)
+#> Asymmetric CI: 1.176 (1.500, 1.082)
 #> 
-#> Standard Error: 0.3601518
-#> Maybe some text here also...
+#> ICC:           0.252 (0.143, 0.376)
+#> SigmaB:        0.128 (0.078, 0.177)
+#> SigmaE:        0.681
 ```
 
 We can plot this, and as the plotting is done by ggplot2 it’s easy to

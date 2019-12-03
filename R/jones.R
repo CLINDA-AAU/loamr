@@ -9,7 +9,7 @@
 #' @keywords datasets
 #'
 #' @references
-#' \insertRef{?????}{loamr}
+#' \insertRef{Jones2011}{loamr}
 #'
 #' @source \href{http://?????.html}{Blog}
 #'

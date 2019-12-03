@@ -8,18 +8,25 @@
 
 print.loamobject <- function(x, ...) {
 
-  cat("Output of this type of function... somthing")
+  fm <- function(x) {format(round(x, 3), nsmall = 3)}
+
+  cat("Limits of agreement with the mean for multiple observers", sep = "")
   cat("\n\n")
-  cat("The data has", nrow(x$data),"measurements from", length(unique(x$data$subject)),
-      "individuals by", length(unique(x[[1]]$reader)), "readers")
+  cat("The data has", nrow(x$data),"observations from", length(unique(x$data$subject)),
+      "individuals by", length(unique(x[[1]]$observer)), "observers with", length(unique(x[[1]]$measurement)),"measurements")
   cat("\n\n")
-  cat("Limits of Agreements 2 methods with", x$parts$CI,"% CI")
+  cat("LoAM +/-: (", x$parts$CI * 100, "% CI)", sep = "")
   cat("\n\n")
-  print(x$estimates)
+  cat("Symmetric CI:  ", fm(x$intervals$B.LoAM[2]), " (", fm(x$estimates$uupper[1]),    ", ", fm(x$estimates$lupper[1]), ")", sep = "")
   cat("\n")
-  cat("Standard Error:",x$parts$SE1, " ",x$parts$SE2)
+  cat("Asymmetric CI: ", fm(x$intervals$B.LoAM[2]), " (", fm(x$estimates$uupper[2]),    ", ", fm(x$estimates$lupper[2]), ")", sep = "")
+  cat("\n\n")
+  cat("ICC:           ", fm(x$parts$ICC),           " (", fm(x$intervals$ICC_CI[1]),    ", ", fm(x$intervals$ICC_CI[2]), ")", sep = "")
   cat("\n")
-  cat("Maybe some text here also...\n")
+  cat("SigmaB:        ", fm(x$parts$sigmaB),        " (", fm(x$intervals$sigmaB_CI[1]), ", ", fm(x$intervals$sigmaB_CI[2]), ")", sep = "")
+  cat("\n")
+  cat("SigmaE:        ", fm(x$parts$sigmaE), sep = "")
+  cat("\n")
 }
 
 
@@ -27,6 +34,7 @@ print.loamobject <- function(x, ...) {
 #'
 #' @param x The loamobject
 #' @param ... passthrough
+#' @param CI confidence interval type,
 #' @return a plot
 #' @import ggplot2
 #' @export
@@ -58,7 +66,7 @@ plot.loamobject <- function(x, CI = "sym", ...) {
                        panel.grid.minor = element_blank()) +
     labs(x=expression(bar(y)[.j]), y=expression(y[ij] - bar(y)[.j]),
          title="Bland-Altman plot", subtitle=paste0(ci$name, " LoAM: ", round(ci$lower,2),"/",
-                                                    round(ci$upper,2), " with ", round(ci$outliers,2), "% outliers"),
+                                                    round(ci$upper,2)),
          shape = "Observers")
 
   } else {
@@ -75,7 +83,7 @@ plot.loamobject <- function(x, CI = "sym", ...) {
       theme_bw() + theme(panel.grid.major = element_blank(),
                          panel.grid.minor = element_blank()) +
       labs(x = expression(bar(y)[.j]), y = expression(y[ij] - bar(y)[.j]), title = "Bland-Altman plot",
-           subtitle = paste0(ci$name, " LoAM: ", round(ci$lower,2),"/", round(ci$upper,2), " with ", round(ci$outliers,2),
-                           "% outliers\n(Observers not illustrated as there is more than 6)"))
+           subtitle = paste0(ci$name, " LoAM: ", round(ci$lower,2),"/", round(ci$upper,2), " with ",
+                           "\n(Observers not illustrated as there is more than 6)"))
   }
 }

@@ -1,11 +1,25 @@
 Package: loamr
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Title: Estimation of Limits of Agreements with the Mean
+Version: 0.0.1
+Authors@R: c(
+    person("Lars", "Boerty", email = "lars.borty@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-3715-8528")),
+    person("Heidi", "Christensen", role = "aut"),
+    person("Haematology Research Unit - Aalborg", role = "cph"))
+Description: Implementation of a new method of calculating LoAM
+    inspred by 
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 6.1.1
+Depends: R (>= 2.10)
+Imports: ggplot2,
+        dplyr,
+        tibble,
+        knitr,
+        rlang,
+        MASS,
+        magrittr,
+        tidyr,
+        Rdpack
+RdMacros: Rdpack
