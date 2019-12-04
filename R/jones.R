@@ -1,4 +1,4 @@
-#' Simulated data jones
+#' Data from Jones et al. (2011)
 #'
 #' @docType data
 #'

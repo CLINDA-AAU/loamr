@@ -17,7 +17,7 @@ set.seed(1)
 ```
 
 # loamr
-loamr is an R package to ...
+loamr is an R package to calculate and plot the estimate and CI for the limits of agreement with the mean proposed by Christensen et al. 
 
 
 
