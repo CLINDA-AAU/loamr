@@ -1,4 +1,4 @@
-#' Calculates estimates of ...
+#' Calculates estimate of ...
 #'
 #' @description This function...
 #'
@@ -83,9 +83,9 @@ LOAM <- function(data, CI = 0.95) {
 
   ICC_CI <- c(low_num / low_denom, upp_num / upp_denom)
 
-  sigmaB_CI <- sigmaB + (c(-1, 1) * ((z/a)*sqrt((1/(2*sigmaB))*(((a*sigma2B + sigma2E)^2/vB))+(sigma2E^2/vE))))
+  sigmaB_CI <- sigmaB + (c(-1, 1) * ((z2/a)*sqrt((1/(2*sigmaB))*(((a*sigma2B + sigma2E)^2/vB))+(sigma2E^2/vE))))
 
-  SE <- z2^2 * sqrt(((SSB^2 / vB) + (SSE^2 / vE)) / (2 * N * (SSB + SSE)))
+  SE <- z2 * z * sqrt(((SSB^2 / vB) + (SSE^2 / vE)) / (2 * N * (SSB + SSE)))
 
   lB <- 1 - 1 / qf(up,           vB, Inf)
   hB <- 1     / qf(lo,           vB, Inf) - 1
