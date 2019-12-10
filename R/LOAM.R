@@ -87,10 +87,10 @@ LOAM <- function(data, CI = 0.95) {
 
   SE <- z2 * z * sqrt(((SSB^2 / vB) + (SSE^2 / vE)) / (2 * N * (SSB + SSE)))
 
-  lB <- 1 - 1 / qf(up,           vB, Inf)
-  hB <- 1     / qf(lo,           vB, Inf) - 1
-  le <- 1 - 1 / qf(up, (a - 1) * vB, Inf)
-  he <- 1     / qf(lo, (a - 1) * vB, Inf) - 1
+  lB <- 1 - 1 / qf(up, vB, Inf)
+  hB <- 1     / qf(lo, vB, Inf) - 1
+  le <- 1 - 1 / qf(up, vE, Inf)
+  he <- 1     / qf(lo, vE, Inf) - 1
 
   H <- sqrt(hB^2 * SSB^2 + he^2 * SSE^2)
   L <- sqrt(lB^2 * SSB^2 + le^2 * SSE^2)
