@@ -22,9 +22,9 @@ library(patchwork)
 ```
 
 ```{r message=FALSE, warning=FALSE}
-ITI <- read_csv("csvITI.csv", col_names = FALSE)
-LTL <- read_csv("csvLTL.csv", col_names = FALSE)
-OTO <- read_csv("csvOTO.csv", col_names = FALSE)
+ITI <- read_csv("jens_data/csvITI.csv", col_names = FALSE)
+LTL <- read_csv("jens_data/csvLTL.csv", col_names = FALSE)
+OTO <- read_csv("jens_data/csvOTO.csv", col_names = FALSE)
 
 ITI <- ITI %>%
   mutate(subject = 1:nrow(.)) %>%
@@ -43,11 +43,32 @@ OTO <- OTO %>%
 ```
 
 
+```{r}
+tidy_data_loam <- function(data = NA, m = NA) {
+  read_csv(data, col_names = FALSE, col_types = cols("X13" = col_skip())) %>% 
+  mutate(subject = 1:nrow(.)) %>%
+  gather(observer, value, -subject) %>% 
+  mutate(observer = as.numeric(str_extract(observer, pattern = "[:digit:]+")),
+         measurement = m)
+  }
+
+ITI1 <- tidy_data_loam("jens_data/csvIntraITI.csv",  1)
+ITI2 <- tidy_data_loam("jens_data/csvIntraITI2.csv", 2)
+LTL1 <- tidy_data_loam("jens_data/csvIntraLTL.csv",  1)
+LTL2 <- tidy_data_loam("jens_data/csvIntraLTL2.csv", 2)
+OTO1 <- tidy_data_loam("jens_data/csvIntraOTO.csv",  1)
+OTO2 <- tidy_data_loam("jens_data/csvIntraOTO2.csv", 2)
+
+ITI_dual <- bind_rows(ITI1, ITI2)
+LTL_dual <- bind_rows(LTL1, LTL2)
+OTO_dual <- bind_rows(OTO1, OTO2)
+```
 
 
 
+# Mean and SD {.tabset .tabset-fade .tabset-pills}
 
-# Mean and SD
+## Observer - one
 
 ```{r}
 a <- ITI %>% group_by(observer) %>% 
@@ -63,12 +84,35 @@ c <- OTO %>% group_by(observer) %>%
             sd = sd(value))
 
 cbind(a,b,c) %>% kable() %>% 
-  kable_styling(c("condensed","bordered","striped", "hover"), full_width = F) %>% 
+  kable_styling(c("condensed","bordered","striped", "hover"), full_width = F, position = "left") %>% 
   add_header_above(c("ITI" = 3, "LTI" = 3, "OTO" = 3)) %>% 
-  add_header_above(c("Data grouped by observer"=9))
+  add_header_above(c("Data grouped by observer - one measurement"=9))
+```
+
+## Observer - two
+
+```{r}
+a <- ITI_dual %>% group_by(observer) %>% 
+  summarize(mean = mean(value),
+            sd = sd(value))
+
+b <- LTL_dual %>% group_by(observer) %>% 
+  summarize(mean = mean(value),
+            sd = sd(value))
+
+c <- OTO_dual %>% group_by(observer) %>% 
+  summarize(mean = mean(value),
+            sd = sd(value))
+
+cbind(a,b,c) %>% kable() %>% 
+  kable_styling(c("condensed","bordered","striped", "hover"), full_width = F, position = "left") %>% 
+  add_header_above(c("ITI" = 3, "LTI" = 3, "OTO" = 3)) %>% 
+  add_header_above(c("Data grouped by observer - two measurement"=9))
 ```
 
 
+
+## Subject - one
 
 ```{r}
 a <- ITI %>% group_by(subject) %>% 
@@ -84,10 +128,34 @@ c <- OTO %>% group_by(subject) %>%
             sd = sd(value))
 
 cbind(a,b,c) %>% kable() %>% 
-  kable_styling(c("condensed","bordered","striped", "hover"), full_width = F) %>% 
+  kable_styling(c("condensed","bordered","striped", "hover"), full_width = F, position = "left") %>% 
   add_header_above(c("ITI" = 3, "LTI" = 3, "OTO" = 3)) %>% 
-  add_header_above(c("Data grouped by subject"=9))
+  add_header_above(c("Data grouped by subject - one measurement"=9))
 ```
+
+## Subject - two
+
+```{r}
+a <- ITI_dual %>% group_by(subject) %>% 
+  summarize(mean = mean(value),
+            sd = sd(value))
+
+b <- LTL_dual %>% group_by(subject) %>% 
+  summarize(mean = mean(value),
+            sd = sd(value))
+
+c <- OTO_dual %>% group_by(subject) %>% 
+  summarize(mean = mean(value),
+            sd = sd(value))
+
+cbind(a,b,c) %>% kable() %>% 
+  kable_styling(c("condensed","bordered","striped", "hover"), full_width = F, position = "left") %>% 
+  add_header_above(c("ITI" = 3, "LTI" = 3, "OTO" = 3)) %>% 
+  add_header_above(c("Data grouped by subject - two measurements"=9))
+```
+
+
+
 
 # Jones
 
@@ -96,10 +164,12 @@ data("Jones")
 
 Jones <- Jones %>%
   mutate(subject = 1:nrow(.)) %>%
-  gather(observer, value, -subject)
+  gather(observer, value, -subject) %>% 
+  mutate(observer = as.numeric(str_extract(observer, pattern = "[:digit:]+")))
 
-p1 <- plot(LOAM(Jones), CI="sym")  + scale_y_continuous(limits = c(-3,2)) + labs(title="Symmetric CI", subtitle=NULL) +
-      plot(LOAM(Jones), CI="asym") + scale_y_continuous(limits = c(-3,2)) + labs(title="Asymmetric CI", subtitle=NULL)
+p1 <- plot(LOAM(Jones), CI = "sym")  + scale_y_continuous(limits = c(-3,2)) + labs(title = NULL, subtitle = NULL, tag = "A") +
+      plot(LOAM(Jones), CI = "asym") + scale_y_continuous(limits = c(-3,2)) + labs(title = NULL, subtitle = NULL, tag = "B") + 
+      patchwork::plot_layout(guides = "collect")
 p1
 ```
 
@@ -108,33 +178,49 @@ p1
 
 
 
-
-
 # LOAM
 
-```{r results='asis'}
+```{r}
 LOAM(ITI)
+LOAM(ITI_dual)
 ```
 
 
 ## Symmetric CI
-```{r fig.height=4, fig.width=12}
-p2 <- plot(LOAM(ITI), CI = "sym") + scale_y_continuous(limits = c(-7.5,10.5)) + labs(title="ITI", subtitle=NULL) +
-      plot(LOAM(LTL), CI = "sym") + scale_y_continuous(limits = c(-7.5,10.5)) + labs(title="LTL", subtitle=NULL) +
-      plot(LOAM(OTO), CI = "sym") + scale_y_continuous(limits = c(-7.5,10.5)) + labs(title="OTO", subtitle=NULL)
+```{r fig.height=8, fig.width=12}
+p2 <- plot(LOAM(ITI), CI = "sym") + scale_y_continuous(limits = c(-7.5,10.5)) +  
+        labs(title = NULL, subtitle = "ITI", tag = "A", x = NULL) + 
+        theme(plot.subtitle = element_text(hjust = 0.5)) +
+      plot(LOAM(LTL), CI = "sym") + scale_y_continuous(limits = c(-7.5,10.5)) +  
+        labs(title = NULL, subtitle = "LTL", tag = "B", x = NULL, y = NULL) +
+        theme(plot.subtitle = element_text(hjust = 0.5)) +
+      plot(LOAM(OTO), CI = "sym") + scale_y_continuous(limits = c(-7.5,10.5)) +  
+        labs(title = NULL, subtitle = "OTO", tag = "C", x = NULL, y = NULL) +
+        theme(plot.subtitle = element_text(hjust = 0.5)) +
+      plot(LOAM(ITI_dual), CI = "sym") + scale_y_continuous(limits = c(-12,8)) + 
+        labs(title = NULL, subtitle = "ITI", tag = "D") +
+        theme(plot.subtitle = element_text(hjust = 0.5)) +
+      plot(LOAM(LTL_dual), CI = "sym") + scale_y_continuous(limits = c(-12,8)) + 
+        labs(title = NULL, subtitle = "LTL", tag = "E", y = NULL) +
+        theme(plot.subtitle = element_text(hjust = 0.5)) +
+      plot(LOAM(OTO_dual), CI = "sym") + scale_y_continuous(limits = c(-12,8)) + 
+        labs(title = NULL, subtitle = "OTO", tag = "F", y = NULL) + 
+        theme(plot.subtitle = element_text(hjust = 0.5)) +
+      plot_layout(nrow = 2)
 p2
 ```
 
 
-
-
-## Asymmetric CI
-
 ```{r fig.height=4, fig.width=12}
-p3 <- plot(LOAM(ITI), CI = "asym") + scale_y_continuous(limits = c(-7.5,10.5)) + labs(title="ITI", subtitle=NULL) +
-      plot(LOAM(LTL), CI = "asym") + scale_y_continuous(limits = c(-7.5,10.5)) + labs(title="LTL", subtitle=NULL) +
-      plot(LOAM(OTO), CI = "asym") + scale_y_continuous(limits = c(-7.5,10.5)) + labs(title="OTO", subtitle=NULL)
-p3
+#p3 <- plot(LOAM(ITI), CI = "asym") + scale_y_continuous(limits = c(-7.5,10.5)) + labs(title = "ITI", subtitle = NULL) +
+#      plot(LOAM(LTL), CI = "asym") + scale_y_continuous(limits = c(-7.5,10.5)) + labs(title = "LTL", subtitle = NULL) +
+#      plot(LOAM(OTO), CI = "asym") + scale_y_continuous(limits = c(-7.5,10.5)) + labs(title = "OTO", subtitle = NULL)
+#p3
+#
+#p3b <- plot(LOAM(ITI_dual), CI = "asym") + scale_y_continuous(limits = c(-12,8)) + labs(title = "ITI_dual", subtitle = NULL) +
+#       plot(LOAM(LTL_dual), CI = "asym") + scale_y_continuous(limits = c(-12,8)) + labs(title = "LTL_dual", subtitle = NULL) +
+#       plot(LOAM(OTO_dual), CI = "asym") + scale_y_continuous(limits = c(-12,8)) + labs(title = "OTO_dual", subtitle = NULL)
+#p3b
 ```
 
 
@@ -147,9 +233,9 @@ p3
 
 
 
-# Sigma values
+# Sigma values {.tabset .tabset-fade .tabset-pills}
 
-
+## One measurement
 ```{r}
 IT <- LOAM(ITI)
 LT <- LOAM(LTL)
@@ -183,21 +269,105 @@ names(df) <- c("ITI","LTL","OTO")
 
 kable(df )%>% 
   kable_styling(c("condensed","bordered","striped", "hover"), full_width = F) %>% 
-  add_header_above(c("Data" = 4))
+  add_header_above(c("Data with one measurement" = 4))
 ```
+
+## Two measurements
+```{r}
+IT <- LOAM(ITI_dual)
+LT <- LOAM(LTL_dual)
+OT <- LOAM(OTO_dual)
+
+fm <- function(x) {format(round(x, 3), nsmall = 3)}
+
+loam <- c(fm(IT$estimates$upper[1]),
+          fm(LT$estimates$upper[1]),
+          fm(OT$estimates$upper[1]))
+
+symetrical <- c(paste0("(", fm(IT$estimates$lupper[1]), ", ", fm(IT$estimates$uupper[1]), ")"),
+                paste0("(", fm(LT$estimates$lupper[1]), ", ", fm(LT$estimates$uupper[1]), ")"),
+                paste0("(", fm(OT$estimates$lupper[1]), ", ", fm(OT$estimates$uupper[1]), ")"))
+
+asymetrical <- c(paste0("(", fm(IT$estimates$lupper[2]), ", ", fm(IT$estimates$uupper[2]), ")"),
+                 paste0("(", fm(LT$estimates$lupper[2]), ", ", fm(LT$estimates$uupper[2]), ")"),
+                 paste0("(", fm(OT$estimates$lupper[2]), ", ", fm(OT$estimates$uupper[2]), ")"))
+
+icc <- c(fm(IT$parts$ICC),
+         fm(LT$parts$ICC),
+         fm(OT$parts$ICC))
+
+icc_ci <- c(paste0("(", fm(IT$intervals$ICC_CI[1]), ", ", fm(IT$intervals$ICC_CI[2]), ")"),
+            paste0("(", fm(LT$intervals$ICC_CI[1]), ", ", fm(LT$intervals$ICC_CI[2]), ")"),
+            paste0("(", fm(OT$intervals$ICC_CI[1]), ", ", fm(OT$intervals$ICC_CI[2]), ")"))
+
+df <- as.data.frame(rbind(loam, symetrical, asymetrical, icc, icc_ci))
+
+names(df) <- c("ITI","LTL","OTO")
+
+kable(df )%>% 
+  kable_styling(c("condensed","bordered","striped", "hover"), full_width = F) %>% 
+  add_header_above(c("Data with two measurements" = 4))
+```
+
+
+
 
 
 
 ```{r}
-ggsave(p1, filename = "p1.tiff", dpi = 600, height = 4,width = 9)
-ggsave(p2, filename = "p2.tiff", dpi = 600, height = 4,width = 12)
-ggsave(p3, filename = "p3.tiff", dpi = 600, height = 4,width = 12)
+#ggsave(p1,  filename = "plots/p1.tiff",  dpi = 600, height = 4,width = 9)
+#ggsave(p2,  filename = "plots/p2.tiff",  dpi = 600, height = 4,width = 12)
+#ggsave(p2b, filename = "plots/p2b.tiff", dpi = 600, height = 4,width = 12)
+#ggsave(p3,  filename = "plots/p3.tiff",  dpi = 600, height = 4,width = 12)
+#ggsave(p3b, filename = "plots/p3b.tiff", dpi = 600, height = 4,width = 12)
+
+ggsave(p1,  filename = "plots/p1.jpg",  dpi = 600, height = 4,width = 9)
+ggsave(p2,  filename = "plots/p2.jpg",  dpi = 600, height = 8,width = 12)
+
 ```
 
 
 
+# test of coverage
+
+```{r fig.height=4, fig.width=12}
+sigma2B <- 0.1
+sigma2A <- 0.1
+sigma2E <- 0.5
+
+sim <- 200
+
+A <- NA
+B <- NA
+E <- NA
+
+for (i in 1:sim) {
+  fit <- LOAM(simMD())
+  A[i] <- fit$parts$sigma2A
+  B[i] <- fit$parts$sigma2B
+  E[i] <- fit$parts$sigma2E
+}
+
+extra <- tibble(B = sigma2B, A = sigma2A, E = sigma2E) %>% gather(variable, value)
+
+tibble(A,B,E) %>% gather(variable, value) %>% 
+  ggplot(aes(value)) +
+  geom_histogram() +
+  geom_vline(data=extra, aes(xintercept = value)) +
+  facet_wrap(~variable, scales = "free") + labs("1000 simulations of sigma^2")
+```
 
 
+```{r}
+coverage <- NA
+
+for (i in 1:500) {
+  fit <- LOAM(simMD())
+  CI <- fit$intervals$sigmaB_CI[1]
+  coverage[i] <- CI > 0.1 & -CI < 0.1
+}
+mean(coverage)
+```
 
 
 

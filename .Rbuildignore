@@ -1,3 +1,4 @@
 article
 ^.*\.Rproj$
 ^\.Rproj\.user$
+README.Rmd

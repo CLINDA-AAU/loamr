@@ -65,25 +65,30 @@ LOAM <- function(data, CI = 0.95) {
 
   sigmaE <- sqrt(sigma2E)
   sigmaA <- sqrt(sigma2A)
-  sigmaB <- sqrt(sigma2B)
+  sigmaB <- ifelse(sigma2B >= 0, sqrt(sigma2B), NA)
 
   B.LoAM <- c(-1, 1) * z * sqrt((SSB + SSE) / N)
 
-  ICC <- sigma2A / (sigma2A + sigma2B + sigma2E)
+  if (c == 1 & sigma2A >= 0) {
+    ICC       <- sigma2A / (sigma2A + sigma2B + sigma2E)
+    A         <- b * ICC / (a * (1 - ICC))
+    B         <- 1 + b * ICC * (a - 1) / (a * (1 - ICC))
+    v         <- (A * MSB + B * MSE)^2 / ((A * MSB)^2 / vB + (B * MSE)^2 / vE)
+    FL        <- qf(up, a - 1, v)
+    FU        <- qf(up, v, a - 1)
+    low_num   <- a * (MSA - FL * MSE)
+    low_denom <- FL * (b * MSB + (a * b - a - b) * MSE) + a * MSA
+    upp_num   <- a * (FU * MSA - MSE)
+    upp_denom <- b * MSB + (a * b - a - b) * MSE + a * FU * MSA
+    ICC_CI    <- c(low_num / low_denom, upp_num / upp_denom)
+  } else {
+    ICC <- NA
+    ICC_CI <- NA
+  }
 
-  A         <- b * ICC / (a * (1 - ICC))
-  B         <- 1 + b * ICC * (a - 1) / (a * (1 - ICC))
-  v         <- (A * MSB + B * MSE)^2 / ((A * MSB)^2 / vB + (B * MSE)^2 / vE)
-  FL        <- qf(up, a - 1, v)
-  FU        <- qf(up, v, a - 1)
-  low_num   <- a * (MSA - FL * MSE)
-  low_denom <- FL * (b * MSB + (a * b - a - b) * MSE) + a * MSA
-  upp_num   <- a * (FU * MSA - MSE)
-  upp_denom <- b * MSB + (a * b - a - b) * MSE + a * FU * MSA
-
-  ICC_CI <- c(low_num / low_denom, upp_num / upp_denom)
-
-  sigmaB_CI <- sigmaB + (c(-1, 1) * ((z2/a)*sqrt((1/(2*sigmaB))*(((a*sigma2B + sigma2E)^2/vB))+(sigma2E^2/vE))))
+  sigmaB_CI <- ifelse(sigma2B >= 0,
+                      sigmaB + (c(-1, 1) * ((z2 / a) * sqrt((1 / (2 * sigmaB)) * (((a * sigma2B + sigma2E)^2 / vB)) + (sigma2E^2 / vE)))),
+                      NA)
 
   SE <- z2 * z * sqrt(((SSB^2 / vB) + (SSE^2 / vE)) / (2 * N * (SSB + SSE)))
 
@@ -107,8 +112,7 @@ LOAM <- function(data, CI = 0.95) {
                                        round((sum(abs(da$value - da$subjectMean) > B.LoAM[2]) / N) * 100,2)))
 
   parts <- data.frame(sigmaE, sigma2E, sigmaA, sigma2A, sigmaB, sigma2B,
-                      SE, SSE, SSA, SSB, L, H, CI, ICC,
-                      low_num, low_denom, upp_num, upp_denom)
+                      SE, SSE, SSA, SSB, L, H, CI, ICC)
 
   intervals <- data.frame(B.LoAM, ICC_CI, sigmaB_CI)
 

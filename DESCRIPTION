@@ -6,8 +6,8 @@ Authors@R: c(
     person("Lars", "Boerty", email = "lars.borty@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-3715-8528")),
     person("Heidi", "Christensen", role = "aut"),
     person("Haematology Research Unit - Aalborg", role = "cph"))
-Description: Implementation of a new method of calculating LoAM
-    inspred by 
+Description: Implementation of a new method of calculating LoAM.
+    This is inspired by.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

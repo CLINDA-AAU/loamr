@@ -64,10 +64,10 @@ plot.loamobject <- function(x, CI = "sym", ...) {
     geom_point(size=2) +
     theme_bw() + theme(panel.grid.major = element_blank(),
                        panel.grid.minor = element_blank()) +
-    labs(x=expression(bar(y)[.j]), y=expression(y[ij] - bar(y)[.j]),
+    labs(x=expression(italic(bar(y)[.j])), y=expression(italic(y[ij] - bar(y)[.j])),
          title="Bland-Altman plot", subtitle=paste0(ci$name, " LoAM: ", round(ci$lower,2),"/",
                                                     round(ci$upper,2)),
-         shape = "Observers")
+         shape = "Observer")
 
   } else {
 
@@ -82,7 +82,7 @@ plot.loamobject <- function(x, CI = "sym", ...) {
       geom_point(size=2, alpha=0.5) +
       theme_bw() + theme(panel.grid.major = element_blank(),
                          panel.grid.minor = element_blank()) +
-      labs(x = expression(bar(y)[.j]), y = expression(y[ij] - bar(y)[.j]), title = "Bland-Altman plot",
+      labs(x = expression(italic(bar(y)[.j])), y = expression(italic(y[ij] - bar(y)[.j])), title = "Bland-Altman plot",
            subtitle = paste0(ci$name, " LoAM: ", round(ci$lower,2),"/", round(ci$upper,2), " with ",
                            "\n(Observers not illustrated as there is more than 6)"))
   }

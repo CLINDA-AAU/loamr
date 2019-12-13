@@ -2,7 +2,7 @@
 % Please edit documentation in R/LOAM.R
 \name{LOAM}
 \alias{LOAM}
-\title{Calculates estimates of ...}
+\title{Calculates estimate of ...}
 \usage{
 LOAM(data, CI = 0.95)
 }

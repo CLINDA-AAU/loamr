@@ -27,7 +27,7 @@ simMD <- function(subjects = 15, observers = 20, measurements = 1, mu = 0, sigma
 
     SigmaA <- sigma2A * kronecker(kronecker(diag(subjects), matrix(1, nrow = observers, ncol = observers)),
                                   matrix(1, nrow = measurements, ncol = measurements))
-    SigmaB <-  sigma2B * kronecker(kronecker(matrix(1, nrow = subjects, ncol = subjects), diag(observers)), 
+    SigmaB <- sigma2B * kronecker(kronecker(matrix(1, nrow = subjects, ncol = subjects), diag(observers)),
                                    matrix(1, nrow = measurements, ncol = measurements))
     SigmaE <- sigma2E * diag(subjects * observers * measurements)
 
@@ -46,20 +46,5 @@ simMD <- function(subjects = 15, observers = 20, measurements = 1, mu = 0, sigma
 
     return(dat)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
