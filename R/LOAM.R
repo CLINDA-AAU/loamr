@@ -87,7 +87,7 @@ LOAM <- function(data, CI = 0.95) {
   }
 
   sigmaB_CI <- if(sigma2B >= 0){
-    sigmaB + (c(-1, 1) * ((z2 / a) * sqrt((1 / (2 * sigmaB)) * (((a * sigma2B + sigma2E)^2 / vB)) + (sigma2E^2 / vE))))
+    sigmaB + (c(-1, 1) * ((z2 / a) * sqrt((1 / (2 * sigma2B)) * (((a * sigma2B + sigma2E)^2 / vB)) + (sigma2E^2 / vE))))
   } else NA
 
   SE <- z2 * z * sqrt(((SSB^2 / vB) + (SSE^2 / vE)) / (2 * N * (SSB + SSE)))
