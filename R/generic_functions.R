@@ -15,17 +15,17 @@ print.loamobject <- function(x, ...) {
   cat("The data has", nrow(x$data),"observations from", length(unique(x$data$subject)),
       "individuals by", length(unique(x[[1]]$observer)), "observers with", length(unique(x[[1]]$measurement)),"measurements")
   cat("\n\n")
-  cat("LoAM +/-: (", x$parts$CI * 100, "% CI)", sep = "")
+  cat("LoAM: +/-", x$intervals$B.LoAM[2], sep = "")
+  cat("\n")
+  cat("Symmetric  ", x$parts$CI * 100, "% CI: (", fm(x$estimates$lupper[1]),    ", ", fm(x$estimates$uupper[1]), ")", sep = "")
+  cat("\n")
+  cat("Asymmetric ", x$parts$CI * 100, "% CI: (", fm(x$estimates$lupper[2]),    ", ", fm(x$estimates$uupper[2]), ")", sep = "")
   cat("\n\n")
-  cat("Symmetric CI:  ", fm(x$intervals$B.LoAM[2]), " (", fm(x$estimates$uupper[1]),    ", ", fm(x$estimates$lupper[1]), ")", sep = "")
+  cat("ICC (", x$parts$CI * 100, "% CI): ", fm(x$parts$ICC),           " (", fm(x$intervals$ICC_CI[1]),    ", ", fm(x$intervals$ICC_CI[2]), ")", sep = "")
   cat("\n")
-  cat("Asymmetric CI: ", fm(x$intervals$B.LoAM[2]), " (", fm(x$estimates$uupper[2]),    ", ", fm(x$estimates$lupper[2]), ")", sep = "")
-  cat("\n\n")
-  cat("ICC:           ", fm(x$parts$ICC),           " (", fm(x$intervals$ICC_CI[1]),    ", ", fm(x$intervals$ICC_CI[2]), ")", sep = "")
+  cat("sigmaB (", x$parts$CI * 100, "% CI): ", fm(x$parts$sigmaB),        " (", fm(x$intervals$sigmaB_CI[1]), ", ", fm(x$intervals$sigmaB_CI[2]), ")", sep = "")
   cat("\n")
-  cat("SigmaB:        ", fm(x$parts$sigmaB),        " (", fm(x$intervals$sigmaB_CI[1]), ", ", fm(x$intervals$sigmaB_CI[2]), ")", sep = "")
-  cat("\n")
-  cat("SigmaE:        ", fm(x$parts$sigmaE), sep = "")
+  cat("sigmaE: ", fm(x$parts$sigmaE), sep = "")
   cat("\n")
 }
 
@@ -47,7 +47,7 @@ plot.loamobject <- function(x, CI = "sym", ...) {
   } else if (CI == "asym") {
       ci <- x$estimates[2,]
   } else {
-      stop("use 'sym' og 'asym' in confidence interval")
+      stop("'CI' needs to be 'sym' or 'asym'")
     }
 
 
@@ -65,7 +65,7 @@ plot.loamobject <- function(x, CI = "sym", ...) {
     theme_bw() + theme(panel.grid.major = element_blank(),
                        panel.grid.minor = element_blank()) +
     labs(x=expression(italic(bar(y)[.j])), y=expression(italic(y[ij] - bar(y)[.j])),
-         title="Bland-Altman plot", subtitle=paste0(ci$name, " LoAM: ", round(ci$lower,2),"/",
+         title="Agreement plot", subtitle=paste0(ci$name, " LoAM: ", round(ci$lower,2),"/",
                                                     round(ci$upper,2)),
          shape = "Observer")
 
@@ -82,7 +82,7 @@ plot.loamobject <- function(x, CI = "sym", ...) {
       geom_point(size=2, alpha=0.5) +
       theme_bw() + theme(panel.grid.major = element_blank(),
                          panel.grid.minor = element_blank()) +
-      labs(x = expression(italic(bar(y)[.j])), y = expression(italic(y[ij] - bar(y)[.j])), title = "Bland-Altman plot",
+      labs(x = expression(italic(bar(y)[.j])), y = expression(italic(y[ij] - bar(y)[.j])), title = "Agreement plot",
            subtitle = paste0(ci$name, " LoAM: ", round(ci$lower,2),"/", round(ci$upper,2), " with ",
                            "\n(Observers not illustrated as there is more than 6)"))
   }
