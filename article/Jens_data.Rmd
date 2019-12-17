@@ -351,7 +351,6 @@ tibble(A,B,E) %>% gather(variable, value) %>%
 
 
 ```{r}
-sigma2B <- 0.1
 coverage <- NA
 
 for (i in 1:500) {
@@ -359,7 +358,7 @@ for (i in 1:500) {
   CI <- fit$intervals$sigmaB_CI
   coverage[i] <- CI[2] > sqrt(sigma2B) & CI[1] < sqrt(sigma2B)
 }
-mean(coverage)
+mean(coverage, na.rm = T); cat("Removed", sum(is.na(coverage)), "negative estimate(s) of sigma2B")
 ```
 
 
