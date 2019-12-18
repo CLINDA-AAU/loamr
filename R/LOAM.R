@@ -33,8 +33,8 @@ LOAM <- function(data, CI = 0.95) {
   up <- 1 - (1 - CI) / 2
   lo <-     (1 - CI) / 2
 
-  b <- length(unique(data$observer))
   a <- length(unique(data$subject))
+  b <- length(unique(data$observer))
   c <- length(unique(data$measurement))
   N <- a * b * c
 
@@ -86,9 +86,9 @@ LOAM <- function(data, CI = 0.95) {
     ICC_CI <- NA
   }
 
-  sigmaB_CI <- ifelse(sigma2B >= 0,
-                      sigmaB + (c(-1, 1) * ((z2 / a) * sqrt((1 / (2 * sigmaB)) * (((a * sigma2B + sigma2E)^2 / vB)) + (sigma2E^2 / vE)))),
-                      NA)
+  sigmaB_CI <- if(sigma2B >= 0){
+    sigmaB + (c(-1, 1) * ((z2 / a) * sqrt((1 / (2 * sigma2B)) * (((a * sigma2B + sigma2E)^2 / vB)) + (sigma2E^2 / vE))))
+  } else NA
 
   SE <- z2 * z * sqrt(((SSB^2 / vB) + (SSE^2 / vE)) / (2 * N * (SSB + SSE)))
 
@@ -106,10 +106,7 @@ LOAM <- function(data, CI = 0.95) {
                           lupper   = c(B.LoAM[2] - SE, (z * sqrt((SSB + SSE - L) / N))),
                           lower    = c(B.LoAM[1],       B.LoAM[1]),
                           llower   = c(B.LoAM[1] - SE, (-z * sqrt((SSB + SSE + H) / N))),
-                          ulower   = c(B.LoAM[1] + SE, (-z * sqrt((SSB + SSE - L) / N))),
-
-                          outliers = c(round((sum(abs(da$value - da$subjectMean) > B.LoAM[2]) / N) * 100,2),
-                                       round((sum(abs(da$value - da$subjectMean) > B.LoAM[2]) / N) * 100,2)))
+                          ulower   = c(B.LoAM[1] + SE, (-z * sqrt((SSB + SSE - L) / N))))
 
   parts <- data.frame(sigmaE, sigma2E, sigmaA, sigma2A, sigmaB, sigma2B,
                       SE, SSE, SSA, SSB, L, H, CI, ICC)
