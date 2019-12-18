@@ -2,12 +2,12 @@
 % Please edit documentation in R/LOAM.R
 \name{LOAM}
 \alias{LOAM}
-\title{Calculates estimate of ...}
+\title{Function LOAM 18-12-19}
 \usage{
 LOAM(data, CI = 0.95)
 }
 \arguments{
-\item{data}{A dataframe,}
+\item{data}{A dataframe of measurement data}
 
 \item{CI}{confidence interval on the LoAM,}
 }
@@ -15,10 +15,17 @@ LOAM(data, CI = 0.95)
 An object of class "ccobject".
 }
 \description{
-This function...
+This function calculaates the limit of agreement
+with the mean. It calculates both symetrical and asymetrical
+confidence intervals
 }
 \details{
-The function returns ...
+The data argument requires data in long format with all
+columns spelled lower case as here:
+
+- subject :
+- observer : an id of the individual for the specific measurement
+- value : value of the measurement
 }
 \examples{
 data(Jones)

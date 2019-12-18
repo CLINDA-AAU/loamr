@@ -2,31 +2,32 @@
 % Please edit documentation in R/simMD.R
 \name{simMD}
 \alias{simMD}
-\title{Simulates measurement data}
+\title{simMD function 18-12-19}
 \usage{
 simMD(subjects = 15, observers = 20, measurements = 1, mu = 0,
   sigma2A = 0.1, sigma2B = 0.1, sigma2E = 0.5)
 }
 \arguments{
-\item{subjects}{A dataframe,}
+\item{subjects}{Number of subjects to simulate}
 
-\item{observers}{A dataframe,}
+\item{observers}{Number of observers to simulate}
 
-\item{measurements}{A dataframe,}
+\item{measurements}{Number of measurements to simulate}
 
-\item{mu}{A dataframe,}
+\item{mu}{Mean of simulation}
 
-\item{sigma2A}{A dataframe,}
+\item{sigma2A}{parameter}
 
-\item{sigma2B}{A dataframe,}
+\item{sigma2B}{parameter}
 
-\item{sigma2E}{A dataframe,}
+\item{sigma2E}{parameter}
 }
 \value{
 A dataframe of simulated measurements
 }
 \description{
-This function simulates measurement data
+Simulates measurement data to test that can be
+used to test coverage of the LOAM function.
 }
 \details{
 The function returns a dataframe

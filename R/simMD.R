@@ -1,3 +1,4 @@
+#' simMD function 18-12-19
 #'
 #' @description Simulates measurement data to test that can be
 #' used to test coverage of the LOAM function.

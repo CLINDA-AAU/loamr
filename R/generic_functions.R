@@ -16,41 +16,48 @@ print.loamobject <- function(x, ...) {
   cat("The data has", nrow(x$data),"observations from", length(unique(x$data$subject)),
       "individuals by", length(unique(x[[1]]$observer)), "observers with", length(unique(x[[1]]$measurement)),"measurements")
   cat("\n\n")
-  cat("LoAM: +/-", x$intervals$B.LoAM[2], sep = "")
+  cat("LoAM: +/-      ", fm(x$estimates$LoAM), sep = "")
   cat("\n")
-  cat("Symmetric  ", x$parts$CI * 100, "% CI: (", fm(x$estimates$lupper[1]),    ", ", fm(x$estimates$uupper[1]), ")", sep = "")
+  cat("Symmetric CI:        (", fm(x$intervals$LoAM_CI_sym[1]), ", ", fm(x$intervals$LoAM_CI_sym[2]), ")", sep = "")
   cat("\n")
-  cat("Asymmetric ", x$parts$CI * 100, "% CI: (", fm(x$estimates$lupper[2]),    ", ", fm(x$estimates$uupper[2]), ")", sep = "")
+  cat("Asymmetric CI:       (", fm(x$intervals$LoAM_CI_asym[1]), ", ", fm(x$intervals$LoAM_CI_asym[2]), ")", sep = "")
   cat("\n\n")
-  cat("ICC (", x$parts$CI * 100, "% CI): ", fm(x$parts$ICC),           " (", fm(x$intervals$ICC_CI[1]),    ", ", fm(x$intervals$ICC_CI[2]), ")", sep = "")
+  if (!is.na(x$estimates$ICC)) {
+  cat("ICC:           ", fm(x$estimates$ICC),           " (", fm(x$intervals$ICC_CI[1]), ", ", fm(x$intervals$ICC_CI[2]), ")", sep = "")
   cat("\n")
-  cat("sigmaB (", x$parts$CI * 100, "% CI): ", fm(x$parts$sigmaB),        " (", fm(x$intervals$sigmaB_CI[1]), ", ", fm(x$intervals$sigmaB_CI[2]), ")", sep = "")
+  }
+  cat("sigmaB:        ", fm(x$estimates$sigmaB),        " (", fm(x$intervals$sigmaB_CI[1]), ", ", fm(x$intervals$sigmaB_CI[2]), ")", sep = "")
   cat("\n")
-  cat("sigmaE: ", fm(x$parts$sigmaE), sep = "")
+  cat("sigmaE:        ", fm(x$estimates$sigmaE), sep = "")
+  cat("\n\n")
+  cat("Confidence interval in brackets:", x$CI * 100,"%")
   cat("\n")
 }
-
 
 #' Adding to the generic plot function
 #'
 #' @param x The loamobject
 #' @param ... passthrough
-#' @param CI confidence interval type: "sym" or "asym"
+#' @param CItype confidence interval type: "sym" or "asym"
 #'
 #' @return a plot
 #' @import ggplot2
 #' @export
 #'
 
-plot.loamobject <- function(x, CI = "sym", ...) {
+plot.loamobject <- function(x, CItype = "sym", ...) {
 
-  if (CI == "sym") {
-      ci <- x$estimates[1,]
-  } else if (CI == "asym") {
-      ci <- x$estimates[2,]
+  if (CItype == "sym") {
+      ci <- x$intervals$LoAM_CI_sym
+      name <- "symmetric"
+  } else if (CItype == "asym") {
+      ci <- x$intervals$LoAM_CI_asym
+      name <- "asymmetric"
   } else {
-      stop("'CI' needs to be 'sym' or 'asym'")
-    }
+      stop("'CItype' needs to be 'sym' or 'asym'")
+  }
+
+  fm <- function(x) {format(round(x, 3), nsmall = 3)}
 
 
   if (length(unique(x$data$observer)) <= 6) {
@@ -58,34 +65,39 @@ plot.loamobject <- function(x, CI = "sym", ...) {
     x[[1]] %>%
     mutate(centered = value - subjectMean) %>%
     ggplot(aes(x = subjectMean, y = centered, shape = as.factor(observer))) +
-    geom_vline(aes(xintercept=subjectMean), alpha=0.1) +
-    geom_hline(yintercept=ci$upper, color="#1f78b4", linetype="dashed")+
-    geom_hline(yintercept=ci$lower, color="#1f78b4", linetype="dashed")+
-    annotate("rect",ymin=ci$lupper, ymax=ci$uupper, xmin=-Inf, xmax=Inf, alpha=0.2, fill="#1f78b4") +
-    annotate("rect",ymin=ci$llower, ymax=ci$ulower, xmin=-Inf, xmax=Inf, alpha=0.2, fill="#1f78b4") +
-    geom_point(size=2) +
+    geom_vline(aes(xintercept = subjectMean), alpha = 0.1) +
+    geom_hline(yintercept =  x$estimates$LoAM, color = "#1f78b4", linetype = "dashed")+
+    geom_hline(yintercept = -x$estimates$LoAM, color = "#1f78b4", linetype = "dashed")+
+    annotate("rect", ymin = ci[1],  ymax =  ci[2], xmin = -Inf, xmax = Inf, alpha = 0.2, fill = "#1f78b4") +
+    annotate("rect", ymin = -ci[1], ymax = -ci[2], xmin = -Inf, xmax = Inf, alpha = 0.2, fill = "#1f78b4") +
+    geom_point(size = 2) +
     theme_bw() + theme(panel.grid.major = element_blank(),
                        panel.grid.minor = element_blank()) +
-    labs(x=expression(italic(bar(y)[.j])), y=expression(italic(y[ij] - bar(y)[.j])),
-         title="Agreement plot", subtitle=paste0(ci$name, " LoAM: ", round(ci$lower,2),"/",
-                                                    round(ci$upper,2)),
+    labs(x = expression(italic(bar(y)[.j])),
+         y = expression(italic(y[ij] - bar(y)[.j])),
+         title = "Agreement plot",
+         subtitle = paste0("LoAM +/- ", fm(x$estimates$LoAM), "   ", x$CI*100, "% ", name, " CI (", fm(ci[1])," ",fm(ci[2]),")"),
          shape = "Observer")
 
   } else {
+
+    message("Observers not illustrated as there is more than 6")
 
     x[[1]] %>%
       mutate(centered = value - subjectMean) %>%
       ggplot(aes(x = subjectMean, y = centered)) +
       geom_vline(aes(xintercept=subjectMean), alpha=0.1) +
-      geom_hline(yintercept=ci$upper, color="#1f78b4", linetype="dashed")+
-      geom_hline(yintercept=ci$lower, color="#1f78b4", linetype="dashed")+
-      annotate("rect",ymin=ci$lupper, ymax=ci$uupper, xmin=-Inf, xmax=Inf, alpha=0.2, fill="#1f78b4") +
-      annotate("rect",ymin=ci$llower, ymax=ci$ulower, xmin=-Inf, xmax=Inf, alpha=0.2, fill="#1f78b4") +
+      geom_hline(yintercept =  x$estimates$LoAM, color = "#1f78b4", linetype = "dashed")+
+      geom_hline(yintercept = -x$estimates$LoAM, color = "#1f78b4", linetype = "dashed")+
+      annotate("rect", ymin = ci[1],  ymax =  ci[2], xmin = -Inf, xmax = Inf, alpha = 0.2, fill = "#1f78b4") +
+      annotate("rect", ymin = -ci[1], ymax = -ci[2], xmin = -Inf, xmax = Inf, alpha = 0.2, fill = "#1f78b4") +
       geom_point(size=2, alpha=0.5) +
       theme_bw() + theme(panel.grid.major = element_blank(),
                          panel.grid.minor = element_blank()) +
-      labs(x = expression(italic(bar(y)[.j])), y = expression(italic(y[ij] - bar(y)[.j])), title = "Agreement plot",
-           subtitle = paste0(ci$name, " LoAM: ", round(ci$lower,2),"/", round(ci$upper,2), " with ",
-                           "\n(Observers not illustrated as there is more than 6)"))
+      labs(x = expression(italic(bar(y)[.j])),
+           y = expression(italic(y[ij] - bar(y)[.j])),
+           title = "Agreement plot",
+           subtitle = paste0("LoAM +/- ", fm(x$estimates$LoAM), "   ", x$CI*100, "% ", name, " CI (", fm(ci[1])," ",fm(ci[2]),")"),
+           shape = "Observer")
   }
 }

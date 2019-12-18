@@ -49,21 +49,21 @@ LOAM(Jones)
 The S3 class includes a generic plotting function made with ggplot2
 
 ```{r fig.height=4, fig.width=10}
-grid.arrange(plot(LOAM(Jones), CI="sym"), plot(LOAM(Jones), CI="asym"), nrow=1)
+grid.arrange(plot(LOAM(Jones), CItype="sym"), plot(LOAM(Jones), CItype="asym"), nrow=1)
 ```
 
 ## Simulation of Data
 The package also includes a function to simulate data (which is already in long format)
 
 ```{r}
-sim <- simMD(subjects=80, observers=4)
+sim <- simMD(subjects=80, observers=10)
 LOAM(sim)
 ```
 
 We can plot this, and as the plotting is done by ggplot2 it's easy to change elements of the plot, like the title:
 
 ```{r fig.height=4, fig.width=10}
-plot(LOAM(sim), CI="asym") + labs(title="Simulated Data")
+plot(LOAM(sim), CItype="asym") + labs(title="Simulated Data")
 ```
 
 

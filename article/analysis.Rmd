@@ -243,21 +243,21 @@ OT <- LOAM(OTO)
 
 fm <- function(x) {format(round(x, 3), nsmall = 3)}
 
-loam <- c(fm(IT$estimates$upper[1]),
-          fm(LT$estimates$upper[1]),
-          fm(OT$estimates$upper[1]))
+loam <- c(fm(IT$estimates$LoAM),
+          fm(LT$estimates$LoAM),
+          fm(OT$estimates$LoAM))
 
-symmetrical <- c(paste0("(", fm(IT$estimates$lupper[1]), ", ", fm(IT$estimates$uupper[1]), ")"),
-                paste0("(", fm(LT$estimates$lupper[1]), ", ", fm(LT$estimates$uupper[1]), ")"),
-                paste0("(", fm(OT$estimates$lupper[1]), ", ", fm(OT$estimates$uupper[1]), ")"))
+symmetrical <- c(paste0("(", fm(IT$intervals$LoAM_CI_sym[1]), ", ", fm(IT$intervals$LoAM_CI_sym[2]), ")"),
+                 paste0("(", fm(LT$intervals$LoAM_CI_sym[1]), ", ", fm(LT$intervals$LoAM_CI_sym[2]), ")"),
+                 paste0("(", fm(OT$intervals$LoAM_CI_sym[1]), ", ", fm(OT$intervals$LoAM_CI_sym[2]), ")"))
 
-asymmetrical <- c(paste0("(", fm(IT$estimates$lupper[2]), ", ", fm(IT$estimates$uupper[2]), ")"),
-                 paste0("(", fm(LT$estimates$lupper[2]), ", ", fm(LT$estimates$uupper[2]), ")"),
-                 paste0("(", fm(OT$estimates$lupper[2]), ", ", fm(OT$estimates$uupper[2]), ")"))
+asymmetrical <- c(paste0("(", fm(IT$intervals$LoAM_CI_asym[1]), ", ", fm(IT$intervals$LoAM_CI_asym[2]), ")"),
+                  paste0("(", fm(LT$intervals$LoAM_CI_asym[1]), ", ", fm(LT$intervals$LoAM_CI_asym[2]), ")"),
+                  paste0("(", fm(OT$intervals$LoAM_CI_asym[1]), ", ", fm(OT$intervals$LoAM_CI_asym[2]), ")"))
 
-icc <- c(fm(IT$parts$ICC),
-         fm(LT$parts$ICC),
-         fm(OT$parts$ICC))
+icc <- c(fm(IT$estimates$ICC),
+         fm(LT$estimates$ICC),
+         fm(OT$estimates$ICC))
 
 icc_ci <- c(paste0("(", fm(IT$intervals$ICC_CI[1]), ", ", fm(IT$intervals$ICC_CI[2]), ")"),
             paste0("(", fm(LT$intervals$ICC_CI[1]), ", ", fm(LT$intervals$ICC_CI[2]), ")"),
@@ -280,17 +280,17 @@ OT <- LOAM(OTO_dual)
 
 fm <- function(x) {format(round(x, 3), nsmall = 3)}
 
-loam <- c(fm(IT$estimates$upper[1]),
-          fm(LT$estimates$upper[1]),
-          fm(OT$estimates$upper[1]))
+loam <- c(fm(IT$estimates$LoAM),
+          fm(LT$estimates$LoAM),
+          fm(OT$estimates$LoAM))
 
-symmetrical <- c(paste0("(", fm(IT$estimates$lupper[1]), ", ", fm(IT$estimates$uupper[1]), ")"),
-                paste0("(", fm(LT$estimates$lupper[1]), ", ", fm(LT$estimates$uupper[1]), ")"),
-                paste0("(", fm(OT$estimates$lupper[1]), ", ", fm(OT$estimates$uupper[1]), ")"))
+symmetrical <- c(paste0("(", fm(IT$intervals$LoAM_CI_sym[1]), ", ", fm(IT$intervals$LoAM_CI_sym[2]), ")"),
+                 paste0("(", fm(LT$intervals$LoAM_CI_sym[1]), ", ", fm(LT$intervals$LoAM_CI_sym[2]), ")"),
+                 paste0("(", fm(OT$intervals$LoAM_CI_sym[1]), ", ", fm(OT$intervals$LoAM_CI_sym[2]), ")"))
 
-asymmetrical <- c(paste0("(", fm(IT$estimates$lupper[2]), ", ", fm(IT$estimates$uupper[2]), ")"),
-                 paste0("(", fm(LT$estimates$lupper[2]), ", ", fm(LT$estimates$uupper[2]), ")"),
-                 paste0("(", fm(OT$estimates$lupper[2]), ", ", fm(OT$estimates$uupper[2]), ")"))
+asymmetrical <- c(paste0("(", fm(IT$intervals$LoAM_CI_asym[1]), ", ", fm(IT$intervals$LoAM_CI_asym[2]), ")"),
+                  paste0("(", fm(LT$intervals$LoAM_CI_asym[1]), ", ", fm(LT$intervals$LoAM_CI_asym[2]), ")"),
+                  paste0("(", fm(OT$intervals$LoAM_CI_asym[1]), ", ", fm(OT$intervals$LoAM_CI_asym[2]), ")"))
 
 df <- as.data.frame(rbind(loam, symmetrical, asymmetrical))
 
@@ -335,9 +335,9 @@ E <- NA
 
 for (i in 1:sim) {
   fit <- LOAM(simMD())
-  A[i] <- fit$parts$sigma2A
-  B[i] <- fit$parts$sigma2B
-  E[i] <- fit$parts$sigma2E
+  A[i] <- fit$estimates$sigmaA^2
+  B[i] <- fit$estimates$sigmaB^2
+  E[i] <- fit$estimates$sigmaE^2
 }
 
 extra <- tibble(B = sigma2B, A = sigma2A, E = sigma2E) %>% gather(variable, value)

@@ -1,10 +1,17 @@
-#' Calculates estimate of ...
+#' Function LOAM 18-12-19
 #'
-#' @description This function...
+#' @description This function calculaates the limit of agreement
+#' with the mean. It calculates both symetrical and asymetrical
+#' confidence intervals
 #'
-#' @details The function returns ...
+#' @details The data argument requires data in long format with all
+#' columns spelled lower case as here:
 #'
-#' @param data A dataframe,
+#' - subject :
+#' - observer : an id of the individual for the specific measurement
+#' - value : value of the measurement
+#'
+#' @param data A dataframe of measurement data
 #' @param CI confidence interval on the LoAM,
 #'
 #'
@@ -20,6 +27,7 @@
 #'
 #' @export
 #' @import dplyr magrittr tibble
+
 
 LOAM <- function(data, CI = 0.95) {
 
@@ -67,7 +75,7 @@ LOAM <- function(data, CI = 0.95) {
   sigmaA <- sqrt(sigma2A)
   sigmaB <- ifelse(sigma2B >= 0, sqrt(sigma2B), NA)
 
-  B.LoAM <- c(-1, 1) * z * sqrt((SSB + SSE) / N)
+  LoAM <- z * sqrt((SSB + SSE) / N)
 
   if (c == 1 & sigma2A >= 0) {
     ICC       <- sigma2A / (sigma2A + sigma2B + sigma2E)
@@ -88,7 +96,9 @@ LOAM <- function(data, CI = 0.95) {
 
   sigmaB_CI <- if(sigma2B >= 0){
     sigmaB + (c(-1, 1) * ((z2 / a) * sqrt((1 / (2 * sigma2B)) * (((a * sigma2B + sigma2E)^2 / vB)) + (sigma2E^2 / vE))))
-  } else NA
+  } else {
+    NA
+  }
 
   SE <- z2 * z * sqrt(((SSB^2 / vB) + (SSE^2 / vE)) / (2 * N * (SSB + SSE)))
 
@@ -100,23 +110,16 @@ LOAM <- function(data, CI = 0.95) {
   H <- sqrt(hB^2 * SSB^2 + he^2 * SSE^2)
   L <- sqrt(lB^2 * SSB^2 + le^2 * SSE^2)
 
-  estimates <- data.frame(name     = c("Symmetric", "Asymmetric"),
-                          upper    = c(B.LoAM[2],       B.LoAM[2]),
-                          uupper   = c(B.LoAM[2] + SE, (z * sqrt((SSB + SSE + H) / N))),
-                          lupper   = c(B.LoAM[2] - SE, (z * sqrt((SSB + SSE - L) / N))),
-                          lower    = c(B.LoAM[1],       B.LoAM[1]),
-                          llower   = c(B.LoAM[1] - SE, (-z * sqrt((SSB + SSE + H) / N))),
-                          ulower   = c(B.LoAM[1] + SE, (-z * sqrt((SSB + SSE - L) / N))))
+  LoAM_CI_sym  <- c(LoAM - SE,
+                    LoAM + SE)
 
-  parts <- data.frame(sigmaE, sigma2E, sigmaA, sigma2A, sigmaB, sigma2B,
-                      SE, SSE, SSA, SSB, L, H, CI, ICC)
-
-  intervals <- data.frame(B.LoAM, ICC_CI, sigmaB_CI)
+  LoAM_CI_asym <- c(z * sqrt((SSB + SSE - L) / N),
+                    z * sqrt((SSB + SSE + H) / N))
 
   result <- list(data      = da,
-                 estimates = estimates,
-                 parts     = parts,
-                 intervals = intervals)
+                 estimates = data.frame(sigmaE, sigmaA, sigmaB, LoAM, ICC),
+                 intervals = data.frame(LoAM_CI_sym, LoAM_CI_asym, ICC_CI, sigmaB_CI),
+                 CI        = CI)
 
   class(result) <- "loamobject"
 

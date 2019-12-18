@@ -4,12 +4,12 @@
 \alias{plot.loamobject}
 \title{Adding to the generic plot function}
 \usage{
-\method{plot}{loamobject}(x, CI = "sym", ...)
+\method{plot}{loamobject}(x, CItype = "sym", ...)
 }
 \arguments{
 \item{x}{The loamobject}
 
-\item{CI}{confidence interval type,}
+\item{CItype}{confidence interval type: "sym" or "asym"}
 
 \item{...}{passthrough}
 }
