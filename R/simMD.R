@@ -1,16 +1,16 @@
-#' Simulates measurement data
 #'
-#' @description This function simulates measurement data
+#' @description Simulates measurement data to test that can be
+#' used to test coverage of the LOAM function.
 #'
 #' @details The function returns a dataframe
 #'
-#' @param subjects A dataframe,
-#' @param observers A dataframe,
-#' @param measurements A dataframe,
-#' @param mu A dataframe,
-#' @param sigma2A A dataframe,
-#' @param sigma2B A dataframe,
-#' @param sigma2E A dataframe,
+#' @param subjects Number of subjects to simulate
+#' @param observers Number of observers to simulate
+#' @param measurements Number of measurements to simulate
+#' @param mu Mean of simulation
+#' @param sigma2A parameter
+#' @param sigma2B parameter
+#' @param sigma2E parameter
 #'
 #' @return A dataframe of simulated measurements
 #'
@@ -28,7 +28,7 @@ simMD <- function(subjects = 15, observers = 20, measurements = 1, mu = 0, sigma
     SigmaA <- sigma2A * kronecker(kronecker(diag(subjects), matrix(1, nrow = observers, ncol = observers)),
                                   matrix(1, nrow = measurements, ncol = measurements))
     SigmaB <- sigma2B * kronecker(kronecker(matrix(1, nrow = subjects, ncol = subjects), diag(observers)),
-                                   matrix(1, nrow = measurements, ncol = measurements))
+                                  matrix(1, nrow = measurements, ncol = measurements))
     SigmaE <- sigma2E * diag(subjects * observers * measurements)
 
     Sigma  <- SigmaA + SigmaB + SigmaE

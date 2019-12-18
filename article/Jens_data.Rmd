@@ -353,7 +353,7 @@ extra <- tibble(B = sigma2B, A = sigma2A, E = sigma2E) %>% gather(variable, valu
 tibble(A,B,E) %>% gather(variable, value) %>% 
   ggplot(aes(value)) +
   geom_histogram() +
-  geom_vline(data=extra, aes(xintercept = value)) +
+  geom_vline(data = extra, aes(xintercept = value)) +
   facet_wrap(~variable, scales = "free") + labs("1000 simulations of sigma^2")
 ```
 

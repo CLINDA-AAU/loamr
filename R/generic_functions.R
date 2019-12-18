@@ -2,6 +2,7 @@
 #'
 #' @param x The loamobject
 #' @param ... passthrough
+#'
 #' @return a plot
 #' @export
 #'
@@ -34,7 +35,8 @@ print.loamobject <- function(x, ...) {
 #'
 #' @param x The loamobject
 #' @param ... passthrough
-#' @param CI confidence interval type,
+#' @param CI confidence interval type: "sym" or "asym"
+#'
 #' @return a plot
 #' @import ggplot2
 #' @export
@@ -47,7 +49,7 @@ plot.loamobject <- function(x, CI = "sym", ...) {
   } else if (CI == "asym") {
       ci <- x$estimates[2,]
   } else {
-      stop("use 'sym' og 'asym' in confidence interval")
+      stop("use 'sym' or 'asym' in confidence interval")
     }
 
 
