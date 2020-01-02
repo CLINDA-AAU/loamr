@@ -9,7 +9,7 @@ LOAM(data, CI = 0.95)
 \arguments{
 \item{data}{A dataframe of measurement data}
 
-\item{CI}{confidence interval on the LoAM,}
+\item{CI}{Confidence interval on the LoAM,}
 }
 \value{
 An object of class "ccobject".
