@@ -189,13 +189,13 @@ LOAM(ITI_dual)
 ## Symmetric CI
 ```{r fig.height=8, fig.width=12}
 p2 <- plot(LOAM(ITI), CI = "sym") + scale_y_continuous(limits = c(-7.5,10.5)) +  
-        labs(title = NULL, subtitle = "ITI", tag = "A", x = NULL) + 
+        labs(title = NULL, subtitle = "ITI", tag = "A") + 
         theme(plot.subtitle = element_text(hjust = 0.5)) +
       plot(LOAM(LTL), CI = "sym") + scale_y_continuous(limits = c(-7.5,10.5)) +  
-        labs(title = NULL, subtitle = "LTL", tag = "B", x = NULL, y = NULL) +
+        labs(title = NULL, subtitle = "LTL", tag = "B", y = NULL) +
         theme(plot.subtitle = element_text(hjust = 0.5)) +
       plot(LOAM(OTO), CI = "sym") + scale_y_continuous(limits = c(-7.5,10.5)) +  
-        labs(title = NULL, subtitle = "OTO", tag = "C", x = NULL, y = NULL) +
+        labs(title = NULL, subtitle = "OTO", tag = "C", y = NULL) +
         theme(plot.subtitle = element_text(hjust = 0.5)) +
       plot(LOAM(ITI_dual), CI = "sym") + scale_y_continuous(limits = c(-12,8)) + 
         labs(title = NULL, subtitle = "ITI", tag = "D") +

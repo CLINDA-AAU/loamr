@@ -58,7 +58,7 @@ plot.loamobject <- function(x, CItype = "sym", ...) {
   }
 
   fm <- function(x) {format(round(x, 3), nsmall = 3)}
-
+  k <- max(x$data$measurement)
 
   if (length(unique(x$data$observer)) <= 6) {
 
@@ -73,8 +73,8 @@ plot.loamobject <- function(x, CItype = "sym", ...) {
     geom_point(size = 2) +
     theme_bw() + theme(panel.grid.major = element_blank(),
                        panel.grid.minor = element_blank()) +
-    labs(x = expression(italic(bar(y)[.j])),
-         y = expression(italic(y[ij] - bar(y)[.j])),
+    labs(x = ifelse(k > 1, expression(italic(bar(y)[i..])), expression(italic(bar(y)[i.]))),
+         y = ifelse(k > 1, expression(italic(y[ijk] - bar(y)[i..])), expression(italic(y[ij] - bar(y)[i.]))),
          title = "Agreement plot",
          subtitle = paste0("LoAM +/- ", fm(x$estimates$LoAM), "   ", x$CI*100, "% ", name, " CI (", fm(ci[1])," ",fm(ci[2]),")"),
          shape = "Observer")
@@ -94,8 +94,8 @@ plot.loamobject <- function(x, CItype = "sym", ...) {
       geom_point(size=2, alpha=0.5) +
       theme_bw() + theme(panel.grid.major = element_blank(),
                          panel.grid.minor = element_blank()) +
-      labs(x = expression(italic(bar(y)[.j])),
-           y = expression(italic(y[ij] - bar(y)[.j])),
+      labs(x = ifelse(k > 1, expression(italic(bar(y)[i..])), expression(italic(bar(y)[i.]))),
+           y = ifelse(k > 1, expression(italic(y[ijk] - bar(y)[i..])), expression(italic(y[ij] - bar(y)[i.]))),
            title = "Agreement plot",
            subtitle = paste0("LoAM +/- ", fm(x$estimates$LoAM), "   ", x$CI*100, "% ", name, " CI (", fm(ci[1])," ",fm(ci[2]),")"),
            shape = "Observer")
