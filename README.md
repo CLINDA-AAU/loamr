@@ -52,7 +52,7 @@ LOAM(Jones)
 #> 
 #> ICC:           0.837 (0.744, 0.903)
 #> sigmaB:        0.285 (0.067, 0.503)
-#> sigmaE:        0.579
+#> sigmaE:        0.579 (0.514, 0.643)
 #> 
 #> Confidence interval in brackets: 95 %
 ```
@@ -83,7 +83,7 @@ LOAM(sim)
 #> 
 #> ICC:           0.104 (0.057, 0.170)
 #> sigmaB:        0.235 (0.113, 0.357)
-#> sigmaE:        0.737
+#> sigmaE:        0.737 (0.698, 0.775)
 #> 
 #> Confidence interval in brackets: 95 %
 ```

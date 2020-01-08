@@ -35,8 +35,8 @@ LOAM <- function(data, CI = 0.95) {
     data$measurement <- as.integer(1)
   }
 
-  CI_LOAM <- 0.95
-  z  <- abs(qnorm((1 - CI_LOAM) / 2))
+  LOAM_perc <- 0.95
+  z  <- abs(qnorm((1 - LOAM_perc) / 2))
   z2 <- abs(qnorm((1 - CI) / 2))
   up <- 1 - (1 - CI) / 2
   lo <-     (1 - CI) / 2
@@ -100,6 +100,8 @@ LOAM <- function(data, CI = 0.95) {
     NA
   }
 
+  sigmaE_CI <- sigmaE + c(-1, 1) * z2 * sigmaE * sqrt(1 / (2 * vE))
+
   SE <- z2 * z * sqrt(((SSB^2 / vB) + (SSE^2 / vE)) / (2 * N * (SSB + SSE)))
 
   lB <- 1 - 1 / qf(up, vB, Inf)
@@ -118,7 +120,7 @@ LOAM <- function(data, CI = 0.95) {
 
   result <- list(data      = da,
                  estimates = data.frame(sigmaE, sigmaA, sigmaB, LoAM, ICC),
-                 intervals = data.frame(LoAM_CI_sym, LoAM_CI_asym, ICC_CI, sigmaB_CI),
+                 intervals = data.frame(LoAM_CI_sym, LoAM_CI_asym, ICC_CI, sigmaB_CI, sigmaE_CI),
                  CI        = CI)
 
   class(result) <- "loamobject"

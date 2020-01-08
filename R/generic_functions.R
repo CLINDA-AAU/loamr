@@ -28,7 +28,7 @@ print.loamobject <- function(x, ...) {
   }
   cat("sigmaB:        ", fm(x$estimates$sigmaB),        " (", fm(x$intervals$sigmaB_CI[1]), ", ", fm(x$intervals$sigmaB_CI[2]), ")", sep = "")
   cat("\n")
-  cat("sigmaE:        ", fm(x$estimates$sigmaE), sep = "")
+  cat("sigmaE:        ", fm(x$estimates$sigmaE),        " (", fm(x$intervals$sigmaE_CI[1]), ", ", fm(x$intervals$sigmaE_CI[2]), ")", sep = "")
   cat("\n\n")
   cat("Confidence interval in brackets:", x$CI * 100,"%")
   cat("\n")
@@ -45,7 +45,7 @@ print.loamobject <- function(x, ...) {
 #' @export
 #'
 
-plot.loamobject <- function(x, CItype = "sym", ...) {
+plot.loamobject <- function(x, CItype = "asym", ...) {
 
   if (CItype == "sym") {
       ci <- x$intervals$LoAM_CI_sym
