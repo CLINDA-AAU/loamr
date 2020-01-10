@@ -1628,6 +1628,7 @@ library(kableExtra)
 library(patchwork)</code></pre>
 <div id="data" class="section level1">
 <h1>Data</h1>
+<p>A total of six datasets concerning aortic diameter measured by three different methods (ITI, LTL, and OTO). For each method 2 datasets: one dataset containing one measurement for each of 18 observers on 50 aortas, and another dataset containing two measurements for each of 12 observers (subset of the 18) on 50 aortas (same aortas as the single measurement case).</p>
 <pre class="r"><code>ITI &lt;- read_csv(&quot;jens_data/csvITI.csv&quot;, col_names = FALSE)
 LTL &lt;- read_csv(&quot;jens_data/csvLTL.csv&quot;, col_names = FALSE)
 OTO &lt;- read_csv(&quot;jens_data/csvOTO.csv&quot;, col_names = FALSE)
@@ -1645,8 +1646,10 @@ LTL &lt;- LTL %&gt;%
 OTO &lt;- OTO %&gt;%
   mutate(subject = 1:nrow(.)) %&gt;%
   gather(observer, value, -subject) %&gt;% 
-  mutate(observer = as.numeric(str_extract(observer, pattern = &quot;[:digit:]+&quot;)))</code></pre>
-<pre class="r"><code>tidy_data_loam &lt;- function(data = NA, m = NA) {
+  mutate(observer = as.numeric(str_extract(observer, pattern = &quot;[:digit:]+&quot;)))
+
+
+tidy_data_loam &lt;- function(data = NA, m = NA) {
   read_csv(data, col_names = FALSE, col_types = cols(&quot;X13&quot; = col_skip())) %&gt;% 
   mutate(subject = 1:nrow(.)) %&gt;%
   gather(observer, value, -subject) %&gt;% 
@@ -1664,6 +1667,28 @@ OTO2 &lt;- tidy_data_loam(&quot;jens_data/csvIntraOTO2.csv&quot;, 2)
 ITI_dual &lt;- bind_rows(ITI1, ITI2)
 LTL_dual &lt;- bind_rows(LTL1, LTL2)
 OTO_dual &lt;- bind_rows(OTO1, OTO2)</code></pre>
+<p>ITI dataset with one measurement per observer:</p>
+<pre class="r"><code>head(ITI)</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   subject observer value
+##     &lt;int&gt;    &lt;dbl&gt; &lt;dbl&gt;
+## 1       1        1 15.8 
+## 2       2        1 17.4 
+## 3       3        1 16.0 
+## 4       4        1  9.78
+## 5       5        1 12.7 
+## 6       6        1 19.2</code></pre>
+<p>ITI dataset with two measurements per observer:</p>
+<pre class="r"><code>head(ITI_dual)</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   subject observer value measurement
+##     &lt;int&gt;    &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;
+## 1       1        1 15.6            1
+## 2       2        1 18.6            1
+## 3       3        1 16.7            1
+## 4       4        1  8.77           1
+## 5       5        1 13.2            1
+## 6       6        1 20.9            1</code></pre>
 </div>
 <div id="mean-and-sd" class="section level1 tabset tabset-fade tabset-pills">
 <h1>Mean and SD</h1>

@@ -21,6 +21,9 @@ library(patchwork)
 
 # Data
 
+A total of six datasets concerning aortic diameter measured by three different methods (ITI, LTL, and OTO). 
+For each method 2 datasets: one dataset containing one measurement for each of 18 observers on 50 aortas, and another dataset containing two measurements for each of 12 observers (subset of the 18) on 50 aortas (same aortas as the single measurement case). 
+
 ```{r message=FALSE, warning=FALSE}
 ITI <- read_csv("jens_data/csvITI.csv", col_names = FALSE)
 LTL <- read_csv("jens_data/csvLTL.csv", col_names = FALSE)
@@ -40,10 +43,8 @@ OTO <- OTO %>%
   mutate(subject = 1:nrow(.)) %>%
   gather(observer, value, -subject) %>% 
   mutate(observer = as.numeric(str_extract(observer, pattern = "[:digit:]+")))
-```
 
 
-```{r}
 tidy_data_loam <- function(data = NA, m = NA) {
   read_csv(data, col_names = FALSE, col_types = cols("X13" = col_skip())) %>% 
   mutate(subject = 1:nrow(.)) %>%
@@ -62,6 +63,17 @@ OTO2 <- tidy_data_loam("jens_data/csvIntraOTO2.csv", 2)
 ITI_dual <- bind_rows(ITI1, ITI2)
 LTL_dual <- bind_rows(LTL1, LTL2)
 OTO_dual <- bind_rows(OTO1, OTO2)
+```
+
+ITI dataset with one measurement per observer:
+```{r}
+head(ITI)
+```
+
+
+ITI dataset with two measurements per observer:
+```{r}
+head(ITI_dual)
 ```
 
 
