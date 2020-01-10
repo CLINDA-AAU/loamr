@@ -1,0 +1,48 @@
+---
+title: "Test of coverage for sigmaB CI"
+output: html_document
+---
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(loamr)
+library(knitr)
+```
+
+```{r fig.height=4, fig.width=12}
+sigma2A <- 0.1
+sigma2B <- 0.1
+sigma2E <- 0.5
+
+sim <- 200
+
+A <- NA
+B <- NA
+E <- NA
+
+for (i in 1:sim) {
+  fit <- LOAM(simMD())
+  A[i] <- fit$estimates$sigmaA^2
+  B[i] <- fit$estimates$sigmaB^2
+  E[i] <- fit$estimates$sigmaE^2
+}
+
+extra <- tibble(A = sigma2A, B = sigma2B, E = sigma2E) %>% gather(variable, value)
+
+tibble(A,B,E) %>% gather(variable, value) %>% 
+  ggplot(aes(value)) +
+  geom_histogram() +
+  geom_vline(data = extra, aes(xintercept = value)) +
+  facet_wrap(~variable, scales = "free") + labs("1000 simulations of sigma^2")
+```
+
+
+```{r}
+coverage <- NA
+
+for (i in 1:500) {
+  fit <- LOAM(simMD(sigma2B = sigma2B))
+  CI <- fit$intervals$sigmaB_CI
+  coverage[i] <- CI[2] > sqrt(sigma2B) & CI[1] < sqrt(sigma2B)
+}
+mean(coverage, na.rm = T); cat("Removed", sum(is.na(coverage)), "negative estimate(s) of sigma2B")
+```

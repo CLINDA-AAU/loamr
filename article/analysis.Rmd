@@ -1,5 +1,5 @@
 ---
-title: "Jens Borgbjerg data LOAMR"
+title: "Agreement analysis of Jens Borgbjerg's data"
 author: "Lars Nielsen"
 date: "28/11/2019"
 output:
@@ -10,8 +10,6 @@ output:
     toc_float:
       collapsed: no
 ---
-
-# Data
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 library(loamr)
@@ -20,6 +18,8 @@ library(kableExtra)
 #devtools::install_github("thomasp85/patchwork")
 library(patchwork)
 ```
+
+# Data
 
 ```{r message=FALSE, warning=FALSE}
 ITI <- read_csv("jens_data/csvITI.csv", col_names = FALSE)
@@ -217,6 +217,14 @@ p3 <-   plot(LOAM(ITI_dual), CI = "asym") + scale_y_continuous(limits = c(-12,8)
 p3
 ```
 
+```{r}
+#ggsave(p2,  filename = "plots/p2.tiff",  dpi = 600, height = 4,width = 12)
+#ggsave(p3,  filename = "plots/p3.tiff",  dpi = 600, height = 4,width = 12)
+
+ggsave(p2,  filename = "plots/p2.jpg",  dpi = 600, height = 8,width = 12)
+ggsave(p3, filename = "plots/p3.jpg", dpi = 600, height = 4, width = 12)
+```
+
 # Sigma values {.tabset .tabset-fade .tabset-pills}
 
 ## One measurement
@@ -284,97 +292,6 @@ kable(df )%>%
   kable_styling(c("condensed","bordered","striped", "hover"), full_width = F) %>% 
   add_header_above(c("Data with two measurements" = 4))
 ```
-
-
-
-
-
-
-```{r}
-#ggsave(p2,  filename = "plots/p2.tiff",  dpi = 600, height = 4,width = 12)
-#ggsave(p2b, filename = "plots/p2b.tiff", dpi = 600, height = 4,width = 12)
-#ggsave(p3,  filename = "plots/p3.tiff",  dpi = 600, height = 4,width = 12)
-#ggsave(p3b, filename = "plots/p3b.tiff", dpi = 600, height = 4,width = 12)
-
-ggsave(p2,  filename = "plots/p2.jpg",  dpi = 600, height = 8,width = 12)
-ggsave(p3, filename = "plots/p3.jpg", dpi = 600, height = 4, width = 12)
-
-```
-
-
-
-# test of coverage
-
-```{r fig.height=4, fig.width=12}
-sigma2B <- 0.1
-sigma2A <- 0.1
-sigma2E <- 0.5
-
-sim <- 200
-
-A <- NA
-B <- NA
-E <- NA
-
-for (i in 1:sim) {
-  fit <- LOAM(simMD())
-  A[i] <- fit$estimates$sigmaA^2
-  B[i] <- fit$estimates$sigmaB^2
-  E[i] <- fit$estimates$sigmaE^2
-}
-
-extra <- tibble(B = sigma2B, A = sigma2A, E = sigma2E) %>% gather(variable, value)
-
-tibble(A,B,E) %>% gather(variable, value) %>% 
-  ggplot(aes(value)) +
-  geom_histogram() +
-  geom_vline(data = extra, aes(xintercept = value)) +
-  facet_wrap(~variable, scales = "free") + labs("1000 simulations of sigma^2")
-```
-
-
-```{r}
-coverage <- NA
-
-for (i in 1:500) {
-  fit <- LOAM(simMD(sigma2B = sigma2B))
-  CI <- fit$intervals$sigmaB_CI
-  coverage[i] <- CI[2] > sqrt(sigma2B) & CI[1] < sqrt(sigma2B)
-}
-mean(coverage, na.rm = T); cat("Removed", sum(is.na(coverage)), "negative estimate(s) of sigma2B")
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
