@@ -21,16 +21,22 @@ library(patchwork)
 ```
 
 # Data
-Here we consider measurements on lung tumours from a study described in Erasmus et al (2003). The data is in wide format, but is transformed into long format (as this is what the 'LOAM' function uses):
+Here we consider measurements on lung tumours from a study described in Erasmus et al (2003). The data is in wide format, but is transformed into long format before it is fed to the 'LOAM' function.
 
+Wide format:
 ```{r}
 data(Erasmus)
 head(Erasmus)
+```
 
+Long format:
+```{r}
 Erasmus <- Erasmus %>%
   mutate(subject = 1:nrow(.)) %>%
   gather(observer, value, -subject) %>% 
   mutate(observer = as.numeric(str_extract(observer, pattern = "[:digit:]+")))
+
+head(Erasmus)
 ```
 
 # Analysis of agreement
