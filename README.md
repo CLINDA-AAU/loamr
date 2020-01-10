@@ -3,8 +3,11 @@
 
 # loamr
 
-loamr is an R package to calculate and plot the estimate and CI for the
-limits of agreement with the mean proposed by Christensen et al. 
+loamr is an R package for performing an agreement analysis for
+continuous measurements by multiple observers as suggested by
+Christensen et al. Specifically, the package can be used for making
+agreement plots and calculation of the estimate and CI for the limits of
+agreement with the mean proposed by Christensen et al. 
 
 ## Installation
 
@@ -38,7 +41,8 @@ Jones <- Jones %>%
   gather(observer, value, -subject)
 ```
 
-Ww can calculate the Limit of Agreements and confidence intervals
+Calculation of estimate and confidence intervals for the limits of
+agreement with the mean:
 
 ``` r
 LOAM(Jones)

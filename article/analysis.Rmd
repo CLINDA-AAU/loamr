@@ -157,24 +157,6 @@ cbind(a,b,c) %>% kable() %>%
 
 
 
-# Jones
-
-```{r fig.height=4, fig.width=9}
-data("Jones")
-
-Jones <- Jones %>%
-  mutate(subject = 1:nrow(.)) %>%
-  gather(observer, value, -subject) %>% 
-  mutate(observer = as.numeric(str_extract(observer, pattern = "[:digit:]+")))
-
-p1 <- plot(LOAM(Jones), CI = "sym")  + scale_y_continuous(limits = c(-3,2)) + labs(title = NULL, subtitle = NULL, tag = "A") +
-      plot(LOAM(Jones), CI = "asym") + scale_y_continuous(limits = c(-3,2)) + labs(title = NULL, subtitle = NULL, tag = "B") + 
-      patchwork::plot_layout(guides = "collect")
-p1
-```
-
-
-
 
 
 
@@ -309,13 +291,11 @@ kable(df )%>%
 
 
 ```{r}
-#ggsave(p1,  filename = "plots/p1.tiff",  dpi = 600, height = 4,width = 9)
 #ggsave(p2,  filename = "plots/p2.tiff",  dpi = 600, height = 4,width = 12)
 #ggsave(p2b, filename = "plots/p2b.tiff", dpi = 600, height = 4,width = 12)
 #ggsave(p3,  filename = "plots/p3.tiff",  dpi = 600, height = 4,width = 12)
 #ggsave(p3b, filename = "plots/p3b.tiff", dpi = 600, height = 4,width = 12)
 
-ggsave(p1,  filename = "plots/p1.jpg",  dpi = 600, height = 4,width = 9)
 ggsave(p2,  filename = "plots/p2.jpg",  dpi = 600, height = 8,width = 12)
 ggsave(p3, filename = "plots/p3.jpg", dpi = 600, height = 4, width = 12)
 

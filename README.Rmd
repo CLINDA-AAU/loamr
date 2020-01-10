@@ -17,8 +17,7 @@ set.seed(1)
 ```
 
 # loamr
-loamr is an R package to calculate and plot the estimate and CI for the limits of agreement with the mean proposed by Christensen et al. 
-
+loamr is an R package for performing an agreement analysis for continuous measurements by multiple observers as suggested by Christensen et al. Specifically, the package can be used for making agreement plots and calculation of the estimate and CI for the limits of agreement with the mean proposed by Christensen et al. 
 
 
 ## Installation
@@ -28,39 +27,17 @@ devtools::install_github("HaemAalborg/loamr")
 ```
 
 # Overview
-The package includes some data from Jones, this is in wide format, so we transform this to a long format as the 'LOAM' function uses:
-
-```{r}
-library(loamr)
-data(Jones)
-head(Jones)
-
-Jones <- Jones %>%
-  mutate(subject = 1:nrow(.)) %>%
-  gather(observer, value, -subject)
-```
-
-Ww can calculate the Limit of Agreements and confidence intervals
-
-```{r}
-LOAM(Jones)
-```
-
-The S3 class includes a generic plotting function made with ggplot2
-
-```{r fig.height=4, fig.width=10}
-grid.arrange(plot(LOAM(Jones), CItype="sym"), plot(LOAM(Jones), CItype="asym"), nrow=1)
-```
 
 ## Simulation of Data
-The package also includes a function to simulate data (which is already in long format)
+The package includes a function to simulate data from the two-way random effects model:
 
 ```{r}
 sim <- simMD(subjects=80, observers=10)
 LOAM(sim)
 ```
 
-We can plot this, and as the plotting is done by ggplot2 it's easy to change elements of the plot, like the title:
+The S3 class includes a generic plotting function made with ggplot2.
+As the plotting is done by ggplot2 it's easy to change elements of the plot, like the title:
 
 ```{r fig.height=4, fig.width=10}
 plot(LOAM(sim), CItype="asym") + labs(title="Simulated Data")
@@ -69,9 +46,7 @@ plot(LOAM(sim), CItype="asym") + labs(title="Simulated Data")
 
 ## References
 
-1. Jones'
-2. Borgbjerg's
-
+1. Christensen et al.
 
 
 
