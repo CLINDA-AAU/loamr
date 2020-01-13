@@ -13,6 +13,7 @@ knitr::opts_chunk$set(
 library(knitr)
 library(tidyverse)
 library(gridExtra)
+library(loamr)
 set.seed(1)
 ```
 
