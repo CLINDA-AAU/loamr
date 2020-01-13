@@ -28,12 +28,11 @@ simMD <- function(subjects = 15, observers = 20, measurements = 1, mu = 0, sigma
 
     SigmaA <- sigma2A * kronecker(kronecker(diag(subjects), matrix(1, nrow = observers, ncol = observers)),
                                   matrix(1, nrow = measurements, ncol = measurements))
-    SigmaB <- sigma2B * kronecker(kronecker(matrix(1, nrow = subjects, ncol = subjects), diag(observers)),
+    SigmaB <- sigma2B * kronecker(kronecker(diag(observers), matrix(1, nrow = subjects, ncol = subjects)),
                                   matrix(1, nrow = measurements, ncol = measurements))
     SigmaE <- sigma2E * diag(subjects * observers * measurements)
 
     Sigma  <- SigmaA + SigmaB + SigmaE
-
     values <- mvrnorm(1, mu = rep(mu, subjects * observers * measurements), Sigma = Sigma)
 
     dat <- tibble(subject     = rep(1:subjects, each = observers * measurements),

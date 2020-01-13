@@ -1,32 +1,42 @@
-#' Function LOAM 18-12-19
+#' Function LOAM 13-01-20
 #'
 #' @description This function calculaates the limit of agreement
 #' with the mean. It calculates both symetrical and asymetrical
-#' confidence intervals
+#' confidence intervals.
 #'
-#' @details The data argument requires data in long format with all
-#' columns spelled lower case as here:
+#' @details The data argument requires data in long/narrow format with all
+#' columns spelled lower case, the required columns are the following:
 #'
-#' - subject :
-#' - observer : an id of the individual for the specific measurement
+#' - subject : a unique id for each subject
+#'
+#' - observer : a unique id of the individual
+#'
 #' - value : value of the measurement
+#'
+#' - measurement : a unique id for each measurement, note that this is optional
+#'
+#' The estimation requires balanced data, so if you want two measurements you need
+#' that for all subject/observer combinations. This is also true for subjects or observers.
+#' This means that all observers must have measured all subjects.
 #'
 #' @param data A dataframe of measurement data
 #' @param CI confidence interval on the LoAM,
 #'
 #'
-#' @return An object of class "ccobject".
+#' @return An object of class "loamobject".
 #'
 #' @examples
-#' data(Jones)
+#' data(Erasmus)
 #'
-#' Jones$subject = 1:nrow(Jones)
-#' Jones <- tidyr::gather(Jones, observer, value, -subject)
+#' Erasmus$subject = 1:nrow(Erasmus)
+#' Erasmus <- tidyr::gather(Erasmus, observer, value, -subject)
 #'
-#' LOAM(Jones)
+#' LOAM(Erasmus)
 #'
 #' @export
 #' @import dplyr magrittr tibble
+#' @importFrom stats qnorm qf
+#' @importFrom rlang .data
 
 
 LOAM <- function(data, CI = 0.95) {
@@ -51,13 +61,13 @@ LOAM <- function(data, CI = 0.95) {
   vB <- b - 1
 
   da <- data %>%
-    group_by(observer) %>%
-    mutate(observerMean = mean(value)) %>%
+    group_by(.data$observer) %>%
+    mutate(observerMean = mean(.data$value)) %>%
     ungroup() %>%
-    group_by(subject) %>%
-    mutate(subjectMean = mean(value)) %>%
+    group_by(.data$subject) %>%
+    mutate(subjectMean = mean(.data$value)) %>%
     ungroup() %>%
-    mutate(valueMean = mean(value))
+    mutate(valueMean = mean(.data$value))
 
   SSE <- sum((da$value - da$subjectMean - da$observerMean + da$valueMean)^2)
   SSA <- sum((da$subjectMean - da$valueMean)^2)
@@ -90,8 +100,8 @@ LOAM <- function(data, CI = 0.95) {
     upp_denom <- b * MSB + (a * b - a - b) * MSE + a * FU * MSA
     ICC_CI    <- c(low_num / low_denom, upp_num / upp_denom)
   } else {
-    ICC <- NA
-    ICC_CI <- NA
+    ICC       <- NA
+    ICC_CI    <- NA
   }
 
   sigmaB_CI <- if(sigma2B >= 0){

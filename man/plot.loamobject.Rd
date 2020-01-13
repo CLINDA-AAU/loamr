@@ -4,7 +4,7 @@
 \alias{plot.loamobject}
 \title{Adding to the generic plot function}
 \usage{
-\method{plot}{loamobject}(x, CItype = "sym", ...)
+\method{plot}{loamobject}(x, CItype = "asym", ...)
 }
 \arguments{
 \item{x}{The loamobject}

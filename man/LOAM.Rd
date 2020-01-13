@@ -2,37 +2,45 @@
 % Please edit documentation in R/LOAM.R
 \name{LOAM}
 \alias{LOAM}
-\title{Function LOAM 18-12-19}
+\title{Function LOAM 13-01-20}
 \usage{
 LOAM(data, CI = 0.95)
 }
 \arguments{
 \item{data}{A dataframe of measurement data}
 
-\item{CI}{Confidence interval on the LoAM,}
+\item{CI}{confidence interval on the LoAM,}
 }
 \value{
-An object of class "ccobject".
+An object of class "loamobject".
 }
 \description{
 This function calculaates the limit of agreement
 with the mean. It calculates both symetrical and asymetrical
-confidence intervals
+confidence intervals.
 }
 \details{
-The data argument requires data in long format with all
-columns spelled lower case as here:
+The data argument requires data in long/narrow format with all
+columns spelled lower case, the required columns are the following:
 
-- subject :
-- observer : an id of the individual for the specific measurement
+- subject : a unique id for each subject
+
+- observer : a unique id of the individual
+
 - value : value of the measurement
+
+- measurement : a unique id for each measurement, note that this is optional
+
+The estimation requires balanced data, so if you want two measurements you need
+that for all subject/observer combinations. This is also true for subjects or observers.
+This means that all observers must have measured all subjects.
 }
 \examples{
-data(Jones)
+data(Erasmus)
 
-Jones$subject = 1:nrow(Jones)
-Jones <- tidyr::gather(Jones, observer, value, -subject)
+Erasmus$subject = 1:nrow(Erasmus)
+Erasmus <- tidyr::gather(Erasmus, observer, value, -subject)
 
-LOAM(Jones)
+LOAM(Erasmus)
 
 }

@@ -4,10 +4,12 @@
 \alias{print.loamobject}
 \title{Adding to the generic print function}
 \usage{
-\method{print}{loamobject}(x, ...)
+\method{print}{loamobject}(x, digits = 3, ...)
 }
 \arguments{
 \item{x}{The loamobject}
+
+\item{digits}{number of digits}
 
 \item{...}{passthrough}
 }
