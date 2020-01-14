@@ -7,14 +7,14 @@
 \method{plot}{loamobject}(x, CItype = "asym", ...)
 }
 \arguments{
-\item{x}{The loamobject}
+\item{x}{an object of class 'loamobject'}
 
-\item{CItype}{confidence interval type: "sym" or "asym"}
+\item{CItype}{confidence interval type: symmetric ("sym") or asymmetric ("asym")}
 
 \item{...}{passthrough}
 }
 \value{
-a plot
+an agreement plot with an estimate and CI for the limits of agreement with the mean
 }
 \description{
 Adding to the generic plot function

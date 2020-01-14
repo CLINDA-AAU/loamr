@@ -3,7 +3,7 @@
 \docType{data}
 \name{Erasmus}
 \alias{Erasmus}
-\title{Data from Erasmus et al. (2003)}
+\title{Data from \insertRef{Erasmus2003}{loamr}}
 \format{A data frame with 40 rows and 5 columns, describing tumour size on 40 tumours each measured by 5 readers.}
 \source{
 \href{http://?????.html}{Blog}
@@ -12,7 +12,7 @@
 data(Erasmus)
 }
 \description{
-Data from Erasmus et al. (2003)
+Data from \insertRef{Erasmus2003}{loamr}
 }
 \examples{
 data(Erasmus)

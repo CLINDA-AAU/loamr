@@ -7,14 +7,11 @@
 \method{print}{loamobject}(x, digits = 3, ...)
 }
 \arguments{
-\item{x}{The loamobject}
+\item{x}{an object of class 'loamobject'}
 
-\item{digits}{number of digits}
+\item{digits}{number of digits shown in printed output}
 
 \item{...}{passthrough}
-}
-\value{
-a plot
 }
 \description{
 Adding to the generic print function
