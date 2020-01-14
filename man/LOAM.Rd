@@ -9,7 +9,7 @@ LOAM(data, CI = 0.95)
 \arguments{
 \item{data}{A dataframe of measurement data in long format (see 'Details')}
 
-\item{CI}{coverage probability for the confidence interval on the LoAM,}
+\item{CI}{coverage probability for the confidence interval on the LOAM,}
 }
 \value{
 An object of class "loamobject".

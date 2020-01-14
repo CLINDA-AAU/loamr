@@ -4,15 +4,8 @@
 \alias{simMD}
 \title{simMD function 18-12-19}
 \usage{
-simMD(
-  subjects = 15,
-  observers = 20,
-  measurements = 1,
-  mu = 0,
-  sigma2A = 0.1,
-  sigma2B = 0.1,
-  sigma2E = 0.5
-)
+simMD(subjects = 15, observers = 20, measurements = 1, mu = 0,
+  sigma2A = 0.1, sigma2B = 0.1, sigma2E = 0.5)
 }
 \arguments{
 \item{subjects}{Number of subjects to simulate}

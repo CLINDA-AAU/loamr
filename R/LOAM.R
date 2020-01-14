@@ -19,7 +19,7 @@
 #' This means that all observers must have measured all subjects.
 #'
 #' @param data A dataframe of measurement data in long format (see 'Details')
-#' @param CI coverage probability for the confidence interval on the LoAM,
+#' @param CI coverage probability for the confidence interval on the LOAM,
 #'
 #'
 #' @return An object of class "loamobject".
@@ -84,7 +84,7 @@ LOAM <- function(data, CI = 0.95) {
   sigmaA <- sqrt(sigma2A)
   sigmaB <- ifelse(sigma2B >= 0, sqrt(sigma2B), NA)
 
-  LoAM <- z * sqrt((SSB + SSE) / N)
+  LOAM <- z * sqrt((SSB + SSE) / N)
 
   if (c == 1 & sigma2A >= 0) {
     ICC       <- sigma2A / (sigma2A + sigma2B + sigma2E)
@@ -121,15 +121,15 @@ LOAM <- function(data, CI = 0.95) {
   H <- sqrt(hB^2 * SSB^2 + he^2 * SSE^2)
   L <- sqrt(lB^2 * SSB^2 + le^2 * SSE^2)
 
-  LoAM_CI_sym  <- c(LoAM - SE,
-                    LoAM + SE)
+  LOAM_CI_sym  <- c(LOAM - SE,
+                    LOAM + SE)
 
-  LoAM_CI_asym <- c(z * sqrt((SSB + SSE - L) / N),
+  LOAM_CI_asym <- c(z * sqrt((SSB + SSE - L) / N),
                     z * sqrt((SSB + SSE + H) / N))
 
   result <- list(data      = da,
-                 estimates = data.frame(sigmaE, sigmaA, sigmaB, LoAM, ICC),
-                 intervals = data.frame(LoAM_CI_sym, LoAM_CI_asym, ICC_CI, sigmaB_CI, sigmaE_CI),
+                 estimates = data.frame(sigmaE, sigmaA, sigmaB, LOAM, ICC),
+                 intervals = data.frame(LOAM_CI_sym, LOAM_CI_asym, ICC_CI, sigmaB_CI, sigmaE_CI),
                  CI        = CI)
 
   class(result) <- "loamobject"
