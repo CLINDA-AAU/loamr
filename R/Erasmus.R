@@ -1,4 +1,4 @@
-#' Data from Erasmus et al. (2003)
+#' Data from \insertRef{Erasmus2003}{loamr}
 #'
 #' @docType data
 #'

@@ -39,9 +39,9 @@ print.loamobject <- function(x, digits = 3, ...) {
 #'
 #' @param x an object of class 'loamobject'
 #' @param ... passthrough
-#' @param CItype confidence interval type: symmetric ("sym") or asymmetric ("asym").
+#' @param CItype confidence interval type: symmetric ("sym") or asymmetric ("asym")
 #'
-#' @return a plot
+#' @return an agreement plot with an estimate and CI for the limits of agreement with the mean
 #' @import ggplot2
 #' @importFrom rlang .data
 #' @export

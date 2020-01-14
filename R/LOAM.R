@@ -1,26 +1,25 @@
 #' Function LOAM 13-01-20
 #'
-#' @description This function calculaates the limit of agreement
-#' with the mean. It calculates both symetrical and asymetrical
-#' confidence intervals.
+#' @description This function calculates an estimate and confidence interval for the
+#' 95% limits of agreement with the mean.
 #'
 #' @details The data argument requires data in long/narrow format with all
 #' columns spelled lower case, the required columns are the following:
 #'
-#' - subject : a unique id for each subject
+#' - subject: a unique id for each subject
 #'
-#' - observer : a unique id of the individual
+#' - observer: a unique id of the individual
 #'
-#' - value : value of the measurement
+#' - value: value of the measurement
 #'
-#' - measurement : a unique id for each measurement, note that this is optional
+#' - measurement: a unique id for each measurement, note that this is optional
 #'
 #' The estimation requires balanced data, so if you want two measurements you need
 #' that for all subject/observer combinations. This is also true for subjects or observers.
 #' This means that all observers must have measured all subjects.
 #'
-#' @param data A dataframe of measurement data
-#' @param CI confidence interval on the LoAM,
+#' @param data A dataframe of measurement data in long format (see 'Details')
+#' @param CI coverage probability for the confidence interval on the LoAM,
 #'
 #'
 #' @return An object of class "loamobject".
