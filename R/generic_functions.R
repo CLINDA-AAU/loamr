@@ -1,10 +1,9 @@
 #' Adding to the generic print function
 #'
-#' @param x The loamobject
-#' @param digits number of digits
+#' @param x an object of class 'loamobject'
+#' @param digits number of digits shown in printed output
 #' @param ... passthrough
 #'
-#' @return a plot
 #' @export
 #'
 
@@ -38,9 +37,9 @@ print.loamobject <- function(x, digits = 3, ...) {
 
 #' Adding to the generic plot function
 #'
-#' @param x The loamobject
+#' @param x an object of class 'loamobject'
 #' @param ... passthrough
-#' @param CItype confidence interval type: "sym" or "asym"
+#' @param CItype confidence interval type: symmetric ("sym") or asymmetric ("asym").
 #'
 #' @return a plot
 #' @import ggplot2
