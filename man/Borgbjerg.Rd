@@ -3,13 +3,19 @@
 \docType{data}
 \name{Borgbjerg}
 \alias{Borgbjerg}
-\title{Single measurement data with the ITT meahod of}
-\format{A data frame with 900 observations}
+\title{Aortic diameter data}
+\format{A data frame with 900 observations and 3 variables:
+\describe{
+  \item{subject}{aorta ID}
+  \item{observer}{observer ID}
+  \item{value}{aorta diameter, in mm}
+}}
 \usage{
 data(Borgbjerg)
 }
 \description{
-Single measurement data with the ITT meahod of
+Data frame containing measurements of aortic diameters obtained by the ITI method, see \insertCite{borgbjerg;textual}{loamr}.
+For 50 aortas the diameter have been measured by 18 observers, giving a total of 900 observations.
 }
 \examples{
 data(Borgbjerg)

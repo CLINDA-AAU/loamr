@@ -3,13 +3,20 @@
 \docType{data}
 \name{Borgbjerg_m}
 \alias{Borgbjerg_m}
-\title{Multiple measurement data with the ITI method of}
-\format{A data frame with 1200 observations}
+\title{Aortic diameter data with multiple measurements per observer}
+\format{A data frame with 1200 observations and 4 variables:
+\describe{
+  \item{subject}{aorta ID}
+  \item{observer}{observer ID}
+  \item{value}{aorta diameter, in mm}
+  \item{measurement}{repetition ID, 1/2 = first/second measurement made by the specific observer on the specific aorta}
+}}
 \usage{
 data(Borgbjerg_m)
 }
 \description{
-Multiple measurement data with the ITI method of
+Data frame containing measurements of aortic diameters obtained by the ITI method, see \insertCite{borgbjerg;textual}{loamr}.
+For 50 aortas the diameter have been measured twice by 12 observers, giving a total of 1200 observations.
 }
 \examples{
 data(Borgbjerg_m)
