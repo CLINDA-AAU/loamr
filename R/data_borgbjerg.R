@@ -7,9 +7,9 @@
 #' @usage data(Borgbjerg)
 #' @format A data frame with 900 observations and 3 variables:
 #' \describe{
-#'   \item{subject}{aorta ID}
-#'   \item{observer}{observer ID}
-#'   \item{value}{aorta diameter, in mm}
+#'   \item{\verb{subject}}{a numeric variable giving the aorta ID}
+#'   \item{\verb{observer}}{a numeric variable giving the observer ID}
+#'   \item{\verb{value}}{a numeric variable giving the aorta diameter measurement, in mm}
 #' }
 #' @keywords datasets
 #' @references
@@ -31,10 +31,10 @@
 #' @usage data(Borgbjerg_m)
 #' @format A data frame with 1200 observations and 4 variables:
 #' \describe{
-#'   \item{subject}{aorta ID}
-#'   \item{observer}{observer ID}
-#'   \item{value}{aorta diameter, in mm}
-#'   \item{measurement}{repetition ID, 1/2 = first/second measurement made by the specific observer on the specific aorta}
+#'   \item{\verb{subject}}{a numeric variable giving the aorta ID}
+#'   \item{\verb{observer}}{a numeric variable giving the observer ID}
+#'   \item{\verb{value}}{a numeric variable giving the aorta diameter measurement, in mm}
+#'   \item{\verb{measurement}}{a numeric variable giving the repetition ID, 1/2 = first/second measurement made by the specific observer on the specific aorta}
 #' }
 #' @keywords datasets
 #' @references

@@ -1,22 +1,28 @@
 #' simMD function 18-12-19
 #'
-#' @description Simulates measurement data to test that can be
-#' used to test coverage of the LOAM function.
+#' @description Simulates data from the random effect models described in
+#' \insertCite{christensen;textual}{loamr}
 #'
 #' @details The function returns a dataframe
 #'
-#' @param subjects Number of subjects to simulate
-#' @param observers Number of observers to simulate
-#' @param measurements Number of measurements to simulate
-#' @param mu Mean of simulation
-#' @param sigma2A parameter
-#' @param sigma2B parameter
-#' @param sigma2E parameter
+#' @param subjects number of subjects
+#' @param observers number of observers
+#' @param measurements number of measurements
+#' @param mu overall mean
+#' @param sigma2A inter-subject variance
+#' @param sigma2B inter-observer variance
+#' @param sigma2E residual variance
 #'
-#' @return A dataframe of simulated measurements
+#' @return A dataframe of simulated measurements. The data frame is in the format
+#' required for the 'LOAM'-function.
+#'
+#' @references
+#' \insertRef{christensen}{loamr}
 #'
 #' @examples
 #' simMD()
+#'
+#' LOAM(simMD())
 #'
 #' @export
 #' @importFrom MASS mvrnorm

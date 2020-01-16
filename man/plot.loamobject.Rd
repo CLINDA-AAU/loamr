@@ -14,7 +14,7 @@
 \item{...}{passthrough}
 }
 \value{
-an agreement plot with an estimate and CI for the limits of agreement with the mean
+An agreement plot with an estimate and CI for the 95\% limits of agreement with the mean
 }
 \description{
 Adding to the generic plot function

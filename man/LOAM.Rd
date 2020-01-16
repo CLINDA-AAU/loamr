@@ -37,8 +37,10 @@ The procedure requires balanced data, meaning that all observers must have measu
 all subjects the same number of times.
 
 The function outputs both an approximate asymmetric and symmetric CI for the LOAM.
-Note that the asymmetric CI may be prefered when the number of observers is small/moderate
+Note that the asymmetric CI is prefered, especially when the number of observers is small/moderate
 as discussed in \insertCite{christensen;textual}{loamr}.
+Further, the function outputs estimates and CIs related to the variance components for the
+underlying random model (see \insertCite{christensen;textual}{loamr}) and to the intraclass correlation coeffecient.
 }
 \examples{
 data(Borgbjerg)

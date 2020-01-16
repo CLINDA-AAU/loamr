@@ -15,26 +15,27 @@ simMD(
 )
 }
 \arguments{
-\item{subjects}{Number of subjects to simulate}
+\item{subjects}{number of subjects}
 
-\item{observers}{Number of observers to simulate}
+\item{observers}{number of observers}
 
-\item{measurements}{Number of measurements to simulate}
+\item{measurements}{number of measurements}
 
-\item{mu}{Mean of simulation}
+\item{mu}{overall mean}
 
-\item{sigma2A}{parameter}
+\item{sigma2A}{inter-subject variance}
 
-\item{sigma2B}{parameter}
+\item{sigma2B}{inter-observer variance}
 
-\item{sigma2E}{parameter}
+\item{sigma2E}{residual variance}
 }
 \value{
-A dataframe of simulated measurements
+A dataframe of simulated measurements. The data frame is in the format
+required for the 'LOAM'-function.
 }
 \description{
-Simulates measurement data to test that can be
-used to test coverage of the LOAM function.
+Simulates data from the random effect models described in
+\insertCite{christensen;textual}{loamr}
 }
 \details{
 The function returns a dataframe
@@ -42,4 +43,9 @@ The function returns a dataframe
 \examples{
 simMD()
 
+LOAM(simMD())
+
+}
+\references{
+\insertRef{christensen}{loamr}
 }

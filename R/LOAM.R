@@ -21,8 +21,11 @@
 #' all subjects the same number of times.
 #'
 #' The function outputs both an approximate asymmetric and symmetric CI for the LOAM.
-#' Note that the asymmetric CI may be prefered when the number of observers is small/moderate
+#' Note that the asymmetric CI is prefered, especially when the number of observers is small/moderate
 #' as discussed in \insertCite{christensen;textual}{loamr}.
+#' Further, the function outputs estimates and CIs related to the variance components for the
+#' underlying random model (see \insertCite{christensen;textual}{loamr}) and to the intraclass correlation coeffecient.
+#'
 #'
 #' @param data a data frame containing measurement data in long format (see 'Details')
 #' @param CI coverage probability for the confidence interval on the LOAM.
@@ -114,10 +117,11 @@ LOAM <- function(data, CI = 0.95) {
     ICC_CI    <- NA
   }
 
-  sigmaB_CI <- if(sigma2B >= 0){
-    sigmaB + (c(-1, 1) * ((z2 / a) * sqrt((1 / (2 * sigma2B)) * (((a * sigma2B + sigma2E)^2 / vB)) + (sigma2E^2 / vE))))
+  if(sigma2B >= 0){
+    sigmaB_CI <- sigmaB + (c(-1, 1) * ((z2 / a) * sqrt((1 / (2 * sigma2B)) * (((a * sigma2B + sigma2E)^2 / vB)) + (sigma2E^2 / vE))))
   } else {
-    NA
+    sigmaB_CI <- NA
+    warning("Estimate of sigma2B < 0.")
   }
 
   sigmaE_CI <- sigmaE + c(-1, 1) * z2 * sigmaE * sqrt(1 / (2 * vE))

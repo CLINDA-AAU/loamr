@@ -38,10 +38,10 @@ print.loamobject <- function(x, digits = 3, ...) {
 #' Adding to the generic plot function
 #'
 #' @param x an object of class 'loamobject'
-#' @param ... passthrough
 #' @param CItype confidence interval type: symmetric ("sym") or asymmetric ("asym")
-#'
-#' @return an agreement plot with an estimate and CI for the limits of agreement with the mean
+#' @param ... passthrough
+
+#' @return An agreement plot with an estimate and CI for the 95\% limits of agreement with the mean
 #' @import ggplot2
 #' @importFrom rlang .data
 #' @export
