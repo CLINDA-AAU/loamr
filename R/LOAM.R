@@ -1,7 +1,7 @@
 #' Function LOAM 13-01-20
 #'
 #' @description This function calculates an estimate and confidence interval for the
-#' 95% limits of agreement with the mean.
+#' 95\% limits of agreement with the mean presented by \insertCite{christensen;textual}{loamr}
 #'
 #' @details The data argument requires data in long/narrow format with all
 #' columns spelled lower case, the required columns are the following:
@@ -21,16 +21,15 @@
 #' @param data A dataframe of measurement data in long format (see 'Details')
 #' @param CI coverage probability for the confidence interval on the LOAM,
 #'
+#' @references
+#' \insertRef{christensen}{loamr}
 #'
 #' @return An object of class "loamobject".
 #'
 #' @examples
-#' data(Erasmus)
+#' data(Borgbjerg)
 #'
-#' Erasmus$subject = 1:nrow(Erasmus)
-#' Erasmus <- tidyr::gather(Erasmus, observer, value, -subject)
-#'
-#' LOAM(Erasmus)
+#' LOAM(Borgbjerg)
 #'
 #' @export
 #' @import dplyr magrittr tibble

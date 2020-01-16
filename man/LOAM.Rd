@@ -16,7 +16,7 @@ An object of class "loamobject".
 }
 \description{
 This function calculates an estimate and confidence interval for the
-95% limits of agreement with the mean.
+95\% limits of agreement with the mean presented by \insertCite{christensen;textual}{loamr}
 }
 \details{
 The data argument requires data in long/narrow format with all
@@ -35,11 +35,11 @@ that for all subject/observer combinations. This is also true for subjects or ob
 This means that all observers must have measured all subjects.
 }
 \examples{
-data(Erasmus)
+data(Borgbjerg)
 
-Erasmus$subject = 1:nrow(Erasmus)
-Erasmus <- tidyr::gather(Erasmus, observer, value, -subject)
+LOAM(Borgbjerg)
 
-LOAM(Erasmus)
-
+}
+\references{
+\insertRef{christensen}{loamr}
 }
