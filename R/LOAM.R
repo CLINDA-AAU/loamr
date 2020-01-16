@@ -1,25 +1,31 @@
 #' Function LOAM 13-01-20
 #'
 #' @description This function calculates an estimate and confidence interval for the
-#' 95\% limits of agreement with the mean presented by \insertCite{christensen;textual}{loamr}
+#' 95\% limits of agreement with the mean presented by \insertCite{christensen;textual}{loamr}.
 #'
-#' @details The data argument requires data in long/narrow format with all
-#' columns spelled lower case, the required columns are the following:
+#' @details The data argument requires data in long/narrow format with
+#' the following columns:
 #'
 #' - subject: a unique id for each subject
 #'
-#' - observer: a unique id of the individual
+#' - observer: a unique id of the observer/reader
 #'
 #' - value: value of the measurement
 #'
-#' - measurement: a unique id for each measurement, note that this is optional
+#' - measurement: a unique id 1,..., k indicating the measurement number, when each observer
+#' has performed k measurements on each subject. If only one measurement per observer per subject,
+#' this column is not required.
 #'
-#' The estimation requires balanced data, so if you want two measurements you need
-#' that for all subject/observer combinations. This is also true for subjects or observers.
-#' This means that all observers must have measured all subjects.
 #'
-#' @param data A dataframe of measurement data in long format (see 'Details')
-#' @param CI coverage probability for the confidence interval on the LOAM,
+#' The procedure requires balanced data, meaning that all observers must have measured
+#' all subjects the same number of times.
+#'
+#' The function outputs both an approximate asymmetric and symmetric CI for the LOAM.
+#' Note that the asymmetric CI may be prefered when the number of observers is small/moderate
+#' as discussed in \insertCite{christensen;textual}{loamr}.
+#'
+#' @param data a data frame containing measurement data in long format (see 'Details')
+#' @param CI coverage probability for the confidence interval on the LOAM.
 #'
 #' @references
 #' \insertRef{christensen}{loamr}
@@ -28,8 +34,14 @@
 #'
 #' @examples
 #' data(Borgbjerg)
+#' L <- LOAM(Borgbjerg)
+#' L
 #'
-#' LOAM(Borgbjerg)
+#' # Point estimates of LOAM, sigmaA, sigmaB, sigmaE, and ICC(A, 1):
+#' L$estimates
+#'
+#' # CIs for the LOAM, sigmaB, sigmaE, and ICC(A, 1):
+#' L$intervals
 #'
 #' @export
 #' @import dplyr magrittr tibble
@@ -127,8 +139,8 @@ LOAM <- function(data, CI = 0.95) {
                     z * sqrt((SSB + SSE + H) / N))
 
   result <- list(data      = da,
-                 estimates = data.frame(sigmaE, sigmaA, sigmaB, LOAM, ICC),
-                 intervals = data.frame(LOAM_CI_sym, LOAM_CI_asym, ICC_CI, sigmaB_CI, sigmaE_CI),
+                 estimates = data.frame(LOAM, sigmaA, sigmaB, sigmaE, ICC),
+                 intervals = data.frame(LOAM_CI_sym, LOAM_CI_asym, sigmaB_CI, sigmaE_CI,  ICC_CI),
                  CI        = CI)
 
   class(result) <- "loamobject"

@@ -7,37 +7,49 @@
 LOAM(data, CI = 0.95)
 }
 \arguments{
-\item{data}{A dataframe of measurement data in long format (see 'Details')}
+\item{data}{a data frame containing measurement data in long format (see 'Details')}
 
-\item{CI}{coverage probability for the confidence interval on the LOAM,}
+\item{CI}{coverage probability for the confidence interval on the LOAM.}
 }
 \value{
 An object of class "loamobject".
 }
 \description{
 This function calculates an estimate and confidence interval for the
-95\% limits of agreement with the mean presented by \insertCite{christensen;textual}{loamr}
+95\% limits of agreement with the mean presented by \insertCite{christensen;textual}{loamr}.
 }
 \details{
-The data argument requires data in long/narrow format with all
-columns spelled lower case, the required columns are the following:
+The data argument requires data in long/narrow format with
+the following columns:
 
 - subject: a unique id for each subject
 
-- observer: a unique id of the individual
+- observer: a unique id of the observer/reader
 
 - value: value of the measurement
 
-- measurement: a unique id for each measurement, note that this is optional
+- measurement: a unique id 1,..., k indicating the measurement number, when each observer
+has performed k measurements on each subject. If only one measurement per observer per subject,
+this column is not required.
 
-The estimation requires balanced data, so if you want two measurements you need
-that for all subject/observer combinations. This is also true for subjects or observers.
-This means that all observers must have measured all subjects.
+
+The procedure requires balanced data, meaning that all observers must have measured
+all subjects the same number of times.
+
+The function outputs both an approximate asymmetric and symmetric CI for the LOAM.
+Note that the asymmetric CI may be prefered when the number of observers is small/moderate
+as discussed in \insertCite{christensen;textual}{loamr}.
 }
 \examples{
 data(Borgbjerg)
+L <- LOAM(Borgbjerg)
+L
 
-LOAM(Borgbjerg)
+# Point estimates of LOAM, sigmaA, sigmaB, sigmaE, and ICC(A, 1):
+L$estimates
+
+# CIs for the LOAM, sigmaB, sigmaE, and ICC(A, 1):
+L$intervals
 
 }
 \references{

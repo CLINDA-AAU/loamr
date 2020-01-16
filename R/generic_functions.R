@@ -31,7 +31,7 @@ print.loamobject <- function(x, digits = 3, ...) {
     cat("ICC(A,1):      ", fm(x$estimates$ICC), " (", fm(x$intervals$ICC_CI[1]), ", ", fm(x$intervals$ICC_CI[2]), ")", sep = "")
   }
   cat("\n\n")
-  cat("Confidence interval in brackets: ", x$CI * 100,"%", sep="")
+  cat("Coverage probability for the above CIs: ", x$CI * 100,"%", sep="")
   cat("\n")
 }
 
