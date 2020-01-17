@@ -6,9 +6,9 @@
 \title{Aortic diameter data}
 \format{A data frame with 900 observations and 3 variables:
 \describe{
-  \item{\verb{subject}}{a numeric variable giving the aorta ID}
-  \item{\verb{observer}}{a numeric variable giving the observer ID}
-  \item{\verb{value}}{a numeric variable giving the aorta diameter measurement, in mm}
+  \item{subject}{a numeric variable giving the aorta ID}
+  \item{observer}{a numeric variable giving the observer ID}
+  \item{value}{a numeric variable giving the aorta diameter measurement, in mm}
 }}
 \usage{
 data(Borgbjerg)

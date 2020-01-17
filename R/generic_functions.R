@@ -12,7 +12,7 @@
 print.loamobject <- function(x, digits = 3, ...) {
   fm <- function(x) {format(round(x, digits), nsmall = digits)}
 
-  cat("Limits of agreement with the mean for multiple observers", sep = "")
+  cat("Limits of agreement with the mean for multiple observers", if(x$OE == F) {"(No observer effect)"})
   cat("\n\n")
   cat("The data has", nrow(x$data),"observations from", length(unique(x$data$subject)),
       "individuals by", length(unique(x[[1]]$observer)), "observers with", length(unique(x[[1]]$measurement)),"measurements")
@@ -23,13 +23,23 @@ print.loamobject <- function(x, digits = 3, ...) {
   cat("\n")
   cat("Asymmetric CI:", strrep(" ",nchar(fm(x$estimates$LOAM))+2),"(", fm(x$intervals$LOAM_CI_asym[1]), ", ", fm(x$intervals$LOAM_CI_asym[2]), ")", sep = "")
   cat("\n\n")
-  cat("sigmaB:        ", fm(x$estimates$sigmaB), " (", fm(x$intervals$sigmaB_CI[1]), ", ", fm(x$intervals$sigmaB_CI[2]), ")", sep = "")
-  cat("\n")
-  cat("sigmaE:        ", fm(x$estimates$sigmaE), " (", fm(x$intervals$sigmaE_CI[1]), ", ", fm(x$intervals$sigmaE_CI[2]), ")", sep = "")
-  cat("\n")
-  if (!is.na(x$estimates$ICC)) {
-    cat("ICC(A,1):      ", fm(x$estimates$ICC), " (", fm(x$intervals$ICC_CI[1]), ", ", fm(x$intervals$ICC_CI[2]), ")", sep = "")
+
+  if(x$OE == F) {
+    cat("sigmaW:        ", fm(x$estimates$sigmaW), sep = "")
+    cat("\n")
+    if (!is.na(x$estimates$ICC)) {
+      cat("ICC(1):        ", fm(x$estimates$ICC), " (", fm(x$intervals$ICC_CI[1]), ", ", fm(x$intervals$ICC_CI[2]), ")", sep = "")
+    }
+  } else {
+    cat("sigmaB:        ", fm(x$estimates$sigmaB), " (", fm(x$intervals$sigmaB_CI[1]), ", ", fm(x$intervals$sigmaB_CI[2]), ")", sep = "")
+    cat("\n")
+    cat("sigmaE:        ", fm(x$estimates$sigmaE), " (", fm(x$intervals$sigmaE_CI[1]), ", ", fm(x$intervals$sigmaE_CI[2]), ")", sep = "")
+    cat("\n")
+    if (!is.na(x$estimates$ICC)) {
+      cat("ICC(A,1):      ", fm(x$estimates$ICC), " (", fm(x$intervals$ICC_CI[1]), ", ", fm(x$intervals$ICC_CI[2]), ")", sep = "")
   }
+  }
+
   cat("\n\n")
   cat("Coverage probability for the above CIs: ", x$CI * 100,"%", sep="")
   cat("\n")

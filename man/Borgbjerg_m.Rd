@@ -6,10 +6,10 @@
 \title{Aortic diameter data with multiple measurements per observer}
 \format{A data frame with 1200 observations and 4 variables:
 \describe{
-  \item{\verb{subject}}{a numeric variable giving the aorta ID}
-  \item{\verb{observer}}{a numeric variable giving the observer ID}
-  \item{\verb{value}}{a numeric variable giving the aorta diameter measurement, in mm}
-  \item{\verb{measurement}}{a numeric variable giving the repetition ID, 1/2 = first/second measurement made by the specific observer on the specific aorta}
+  \item{subject}{a numeric variable giving the aorta ID}
+  \item{observer}{a numeric variable giving the observer ID}
+  \item{value}{a numeric variable giving the aorta diameter measurement, in mm}
+  \item{measurement}{a numeric variable giving the repetition ID, 1/2 = first/second measurement made by the specific observer on the specific aorta}
 }}
 \usage{
 data(Borgbjerg_m)

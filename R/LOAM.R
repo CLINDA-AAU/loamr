@@ -29,6 +29,7 @@
 #'
 #' @param data a data frame containing measurement data in long format (see 'Details')
 #' @param CI coverage probability for the confidence interval on the LOAM.
+#' @param observer_effect If set to false removes the observer effect, see \insertCite{christensen;textual}{loamr}
 #'
 #' @references
 #' \insertRef{christensen}{loamr}
@@ -52,7 +53,7 @@
 #' @importFrom rlang .data
 
 
-LOAM <- function(data, CI = 0.95) {
+LOAM <- function(data, CI = 0.95, observer_effect = T) {
 
   if (!(tibble::has_name(data, "measurement"))) {
     data$measurement <- as.integer(1)
@@ -72,6 +73,7 @@ LOAM <- function(data, CI = 0.95) {
   vE <- a * b * c - a - b + 1
   vA <- a - 1
   vB <- b - 1
+  vW <- (a * ((b * c) - 1))
 
   da <- data %>%
     group_by(.data$observer) %>%
@@ -83,22 +85,28 @@ LOAM <- function(data, CI = 0.95) {
     mutate(valueMean = mean(.data$value))
 
   SSE <- sum((da$value - da$subjectMean - da$observerMean + da$valueMean)^2)
+  SSW <- sum((da$value - da$subjectMean)^2)
   SSA <- sum((da$subjectMean - da$valueMean)^2)
   SSB <- sum((da$observerMean - da$valueMean)^2)
 
   MSE <- SSE / vE
   MSA <- SSA / vA
   MSB <- SSB / vB
+  MSW <- SSW / vW
 
   sigma2E <-  MSE
+  sigma2W <-  MSW
   sigma2A <- (MSA - MSE) / (b * c)
   sigma2B <- (MSB - MSE) / (a * c)
 
   sigmaE <- sqrt(sigma2E)
+  sigmaW <- sqrt(sigma2W)
   sigmaA <- sqrt(sigma2A)
   sigmaB <- ifelse(sigma2B >= 0, sqrt(sigma2B), NA)
 
-  LOAM <- z * sqrt((SSB + SSE) / N)
+  if (observer_effect == T) {
+    LOAM <- z * sqrt((SSB + SSE) / N)
+
 
   if (c == 1 & sigma2A >= 0) {
     ICC       <- sigma2A / (sigma2A + sigma2B + sigma2E)
@@ -145,7 +153,49 @@ LOAM <- function(data, CI = 0.95) {
   result <- list(data      = da,
                  estimates = data.frame(LOAM, sigmaA, sigmaB, sigmaE, ICC),
                  intervals = data.frame(LOAM_CI_sym, LOAM_CI_asym, sigmaB_CI, sigmaE_CI,  ICC_CI),
-                 CI        = CI)
+                 CI        = CI,
+                 OE        = observer_effect)
+
+
+  } else {
+    LOAM <- z * sqrt(SSW / N)
+
+    if (c == 1 & sigma2A >= 0) {
+      ICC       <- (MSA - MSW) / (MSA + ((b - 1) * MSW))
+      Fq        <- qf(up, a * (b - 1), a - 1)
+      Fobs      <- MSA / MSW
+      FL        <- Fobs / Fq
+      FU        <- Fobs * Fq
+      ICC_CI    <- c((FL-1)/ (FL+(b-1)), (FU-1) / (FU+(b-1)))
+    } else {
+      ICC       <- NA
+      ICC_CI    <- NA
+    }
+
+    sigmaB    <- NA
+    sigmaB_CI <- NA
+    sigmaE_CI <- NA
+
+
+    SE <- z2 * z * sqrt(sigma2E / (2 * a * b * c))
+
+    LOAM_CI_sym  <- c(LOAM - SE,
+                      LOAM + SE)
+
+    LOAM_CI_asym <- c(z * sqrt((((b * c) - 1) * SSW) / (b * c * qchisq(lo, df = vW))),
+                      z * sqrt((((b * c) - 1) * SSW) / (b * c * qchisq(up, df = vW))))
+
+
+
+
+
+  result <- list(data      = da,
+                 estimates = data.frame(LOAM, sigmaA, sigmaW, ICC),
+                 intervals = data.frame(LOAM_CI_sym, LOAM_CI_asym,  ICC_CI),
+                 CI        = CI,
+                 OE        = observer_effect)
+
+  }
 
   class(result) <- "loamobject"
 
