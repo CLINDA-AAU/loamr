@@ -162,7 +162,7 @@ LOAM <- function(data, CI = 0.95, observer_effect = T) {
 
     if (c == 1 & sigma2A >= 0) {
       ICC       <- (MSA - MSW) / (MSA + ((b - 1) * MSW))
-      Fq        <- qf(up, a * (b - 1), a - 1)
+      Fq        <- qf(up, a - 1, a * (b - 1))
       Fobs      <- MSA / MSW
       FL        <- Fobs / Fq
       FU        <- Fobs * Fq
