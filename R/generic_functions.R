@@ -23,6 +23,8 @@ print.loamobject <- function(x, digits = 3, ...) {
   cat("\n")
   cat("Asymmetric CI:", strrep(" ",nchar(fm(x$estimates$LOAM))+2),"(", fm(x$intervals$LOAM_CI_asym[1]), ", ", fm(x$intervals$LOAM_CI_asym[2]), ")", sep = "")
   cat("\n\n")
+  cat("sigmaA:        ", fm(x$estimates$sigmaA), " (", fm(x$intervals$sigmaA_CI[1]), ", ", fm(x$intervals$sigmaA_CI[2]), ")", sep = "")
+  cat("\n")
   cat("sigmaB:        ", fm(x$estimates$sigmaB), " (", fm(x$intervals$sigmaB_CI[1]), ", ", fm(x$intervals$sigmaB_CI[2]), ")", sep = "")
   cat("\n")
   cat("sigmaE:        ", fm(x$estimates$sigmaE), " (", fm(x$intervals$sigmaE_CI[1]), ", ", fm(x$intervals$sigmaE_CI[2]), ")", sep = "")

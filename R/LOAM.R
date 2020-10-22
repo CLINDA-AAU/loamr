@@ -95,7 +95,7 @@ LOAM <- function(data, CI = 0.95) {
   sigma2B <- (MSB - MSE) / (a * c)
 
   sigmaE <- sqrt(sigma2E)
-  sigmaA <- sqrt(sigma2A)
+  sigmaA <- ifelse(sigma2A >= 0, sqrt(sigma2A), NA)
   sigmaB <- ifelse(sigma2B >= 0, sqrt(sigma2B), NA)
 
   LOAM <- z * sqrt((SSB + SSE) / N)
@@ -124,6 +124,13 @@ LOAM <- function(data, CI = 0.95) {
     warning("Estimate of sigma2B < 0.")
   }
 
+  if(sigma2A >= 0){
+    sigmaA_CI <- sigmaA + (c(-1, 1) * ((z2 / b) * sqrt((1 / (2 * sigma2A)) * (((b * sigma2A + sigma2E)^2 / vA)) + (sigma2E^2 / vE))))
+  } else {
+    sigmaA_CI <- NA
+    warning("Estimate of sigma2A < 0.")
+  }
+
   sigmaE_CI <- sigmaE + c(-1, 1) * z2 * sigmaE * sqrt(1 / (2 * vE))
 
   SE <- z2 * z * sqrt(((SSB^2 / vB) + (SSE^2 / vE)) / (2 * N * (SSB + SSE)))
@@ -144,7 +151,8 @@ LOAM <- function(data, CI = 0.95) {
 
   result <- list(data      = da,
                  estimates = data.frame(LOAM, sigmaA, sigmaB, sigmaE, ICC),
-                 intervals = data.frame(LOAM_CI_sym, LOAM_CI_asym, sigmaB_CI, sigmaE_CI,  ICC_CI),
+                 intervals = data.frame(LOAM_CI_sym, LOAM_CI_asym, sigmaA_CI,
+                                        sigmaB_CI, sigmaE_CI,  ICC_CI),
                  CI        = CI)
 
   class(result) <- "loamobject"
