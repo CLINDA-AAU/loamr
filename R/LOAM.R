@@ -117,18 +117,18 @@ LOAM <- function(data, CI = 0.95) {
     ICC_CI    <- NA
   }
 
-  if(sigma2B >= 0){
-    sigmaB_CI <- sigmaB + (c(-1, 1) * ((z2 / a) * sqrt((1 / (2 * sigma2B)) * (((a * sigma2B + sigma2E)^2 / vB)) + (sigma2E^2 / vE))))
-  } else {
-    sigmaB_CI <- NA
-    warning("Estimate of sigma2B < 0.")
-  }
-
   if(sigma2A >= 0){
     sigmaA_CI <- sigmaA + (c(-1, 1) * ((z2 / b) * sqrt((1 / (2 * sigma2A)) * (((b * sigma2A + sigma2E)^2 / vA)) + (sigma2E^2 / vE))))
   } else {
     sigmaA_CI <- NA
     warning("Estimate of sigma2A < 0.")
+  }
+
+  if(sigma2B >= 0){
+    sigmaB_CI <- sigmaB + (c(-1, 1) * ((z2 / a) * sqrt((1 / (2 * sigma2B)) * (((a * sigma2B + sigma2E)^2 / vB)) + (sigma2E^2 / vE))))
+  } else {
+    sigmaB_CI <- NA
+    warning("Estimate of sigma2B < 0.")
   }
 
   sigmaE_CI <- sigmaE + c(-1, 1) * z2 * sigmaE * sqrt(1 / (2 * vE))
