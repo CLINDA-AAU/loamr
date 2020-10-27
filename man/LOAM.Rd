@@ -50,7 +50,7 @@ L
 # Point estimates of LOAM, sigmaA, sigmaB, sigmaE, and ICC(A, 1):
 L$estimates
 
-# CIs for the LOAM, sigmaB, sigmaE, and ICC(A, 1):
+# CIs for the LOAM, sigmaA, sigmaB, sigmaE, and ICC(A, 1):
 L$intervals
 
 }
