@@ -1,6 +1,6 @@
 #' Function LOAM 13-01-20
 #'
-#' @description This function calculates an estimate and confidence interval for the
+#' @description This function calculates estimates and confidence intervals for the
 #' 95\% limits of agreement with the mean presented by \insertCite{christensen;textual}{loamr}.
 #'
 #' @details The data argument requires data in long/narrow format with
@@ -12,19 +12,18 @@
 #'
 #' - value: value of the measurement
 #'
-#' - measurement: a unique id 1,..., k indicating the measurement number, when each observer
-#' has performed k measurements on each subject. If only one measurement per observer per subject,
-#' this column is not required.
+#' - measurement: an id indicating the measurement number if each observer
+#' has performed multiple measurements on each subject. If only one measurement
+#' per observer per subject, this column is not required.
 #'
 #'
 #' The procedure requires balanced data, meaning that all observers must have measured
 #' all subjects the same number of times.
 #'
-#' The function outputs both an approximate asymmetric and symmetric CI for the LOAM.
-#' Note that the asymmetric CI is prefered, especially when the number of observers is small/moderate
-#' as discussed in \insertCite{christensen;textual}{loamr}.
-#' Further, the function outputs estimates and CIs related to the variance components for the
-#' underlying random model (see \insertCite{christensen;textual}{loamr}) and to the intraclass correlation coeffecient.
+#' The function outputs estimates and approximate CIs for the LOAM, the
+#' intra-class correlation, \eqn{\sigma_A}, \eqn{\sigma_B}, and \eqn{\sigma_E}, where
+#' \eqn{\sigma_A^2}, \eqn{\sigma_B^2}, and \eqn{\sigma_E^2} are the variance components of the underlying
+#' two-way random model.  See \insertCite{christensen;textual}{loamr} for details.
 #'
 #'
 #' @param data a data frame containing measurement data in long format (see 'Details')
@@ -48,7 +47,7 @@
 #'
 #' @export
 #' @import dplyr magrittr tibble
-#' @importFrom stats qnorm qf
+#' @importFrom stats qnorm qf qchisq
 #' @importFrom rlang .data
 
 
@@ -131,27 +130,24 @@ LOAM <- function(data, CI = 0.95) {
     warning("Estimate of sigma2B < 0.")
   }
 
-  sigmaE_CI <- sigmaE + c(-1, 1) * z2 * sigmaE * sqrt(1 / (2 * vE))
+  sigmaE_CI <- c(sigmaE * sqrt(vE / qchisq(up, vE)),
+                 sigmaE * sqrt(vE / qchisq(lo, vE)))
 
-  SE <- z2 * z * sqrt(((SSB^2 / vB) + (SSE^2 / vE)) / (2 * N * (SSB + SSE)))
 
   lB <- 1 - 1 / qf(up, vB, Inf)
   hB <- 1     / qf(lo, vB, Inf) - 1
-  le <- 1 - 1 / qf(up, vE, Inf)
-  he <- 1     / qf(lo, vE, Inf) - 1
+  lE <- 1 - 1 / qf(up, vE, Inf)
+  hE <- 1     / qf(lo, vE, Inf) - 1
 
-  H <- sqrt(hB^2 * SSB^2 + he^2 * SSE^2)
-  L <- sqrt(lB^2 * SSB^2 + le^2 * SSE^2)
+  H <- sqrt(hB^2 * SSB^2 + hE^2 * SSE^2)
+  L <- sqrt(lB^2 * SSB^2 + lE^2 * SSE^2)
 
-  LOAM_CI_sym  <- c(LOAM - SE,
-                    LOAM + SE)
-
-  LOAM_CI_asym <- c(z * sqrt((SSB + SSE - L) / N),
-                    z * sqrt((SSB + SSE + H) / N))
+  LOAM_CI <- c(z * sqrt((SSB + SSE - L) / N),
+               z * sqrt((SSB + SSE + H) / N))
 
   result <- list(data      = da,
                  estimates = data.frame(LOAM, sigmaA, sigmaB, sigmaE, ICC),
-                 intervals = data.frame(LOAM_CI_sym, LOAM_CI_asym, sigmaA_CI,
+                 intervals = data.frame(LOAM_CI, sigmaA_CI,
                                         sigmaB_CI, sigmaE_CI,  ICC_CI),
                  CI        = CI)
 

@@ -15,7 +15,7 @@ LOAM(data, CI = 0.95)
 An object of class "loamobject".
 }
 \description{
-This function calculates an estimate and confidence interval for the
+This function calculates estimates and confidence intervals for the
 95\% limits of agreement with the mean presented by \insertCite{christensen;textual}{loamr}.
 }
 \details{
@@ -28,19 +28,18 @@ the following columns:
 
 - value: value of the measurement
 
-- measurement: a unique id 1,..., k indicating the measurement number, when each observer
-has performed k measurements on each subject. If only one measurement per observer per subject,
-this column is not required.
+- measurement: an id indicating the measurement number if each observer
+has performed multiple measurements on each subject. If only one measurement
+per observer per subject, this column is not required.
 
 
 The procedure requires balanced data, meaning that all observers must have measured
 all subjects the same number of times.
 
-The function outputs both an approximate asymmetric and symmetric CI for the LOAM.
-Note that the asymmetric CI is prefered, especially when the number of observers is small/moderate
-as discussed in \insertCite{christensen;textual}{loamr}.
-Further, the function outputs estimates and CIs related to the variance components for the
-underlying random model (see \insertCite{christensen;textual}{loamr}) and to the intraclass correlation coeffecient.
+The function outputs estimates and approximate CIs for the LOAM, the
+intra-class correlation, \eqn{\sigma_A}, \eqn{\sigma_B}, and \eqn{\sigma_E}, where
+\eqn{\sigma_A^2}, \eqn{\sigma_B^2}, and \eqn{\sigma_E^2} are the variance components of the underlying
+two-way random model.  See \insertCite{christensen;textual}{loamr} for details.
 }
 \examples{
 data(Borgbjerg)
