@@ -60,7 +60,6 @@ limits of agreement with the mean:
 
 ``` r
 plot(LOAM(sim))
-#> Observers not illustrated as there is more than 6
 ```
 
 ![](man/figures/README-unnamed-chunk-5-1.png)<!-- -->
@@ -69,7 +68,6 @@ Elements of the plot can be easily changed, e.g. the title:
 
 ``` r
 plot(LOAM(sim)) + labs(title="Simulated Data")
-#> Observers not illustrated as there is more than 6
 ```
 
 ![](man/figures/README-unnamed-chunk-6-1.png)<!-- -->
