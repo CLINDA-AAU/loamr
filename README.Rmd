@@ -22,25 +22,33 @@ set.seed(1)
 
 
 ## Installation
-`loamr` can be installed using the following command
+`loamr` can be installed using the following command:
 ```{r, eval = FALSE}
 devtools::install_github("HaemAalborg/loamr")
 ```
 
-# Example
+## Example
 The package includes a function to simulate data from the two-way random effects model
 described in Christensen et al (2020):
 
 ```{r}
 sim <- simMD(subjects=80, observers=10)
+head(sim)
+```
+Estimate and CI for the limits of agreements with the mean:
+```{r}
 LOAM(sim)
 ```
 
-The S3 class includes a generic plotting function made with `ggplot2`.
-As the plotting is done by `ggplot2` it's easy to change elements of the plot, like the title:
+The S3 class includes a generic plotting function made with `ggplot2` for making an 
+agreement plot with indication of estimate and CI for the limits of agreement with the mean:
+```{r}
+plot(LOAM(sim))
+```
 
+Elements of the plot can be easily changed, e.g. the title:
 ```{r fig.height=4, fig.width=10}
-plot(LOAM(sim), CItype="asym") + labs(title="Simulated Data")
+plot(LOAM(sim)) + labs(title="Simulated Data")
 ```
 
 

@@ -7,23 +7,38 @@
 continuous measurements made by multiple observers on a number of
 subjects. The package provides functions for making agreement plots and
 for calculating the estimate and CI for the limits of agreement with the
-mean proposed by Christensen et al. 
+mean proposed by Christensen et al. (2020).
 
 ## Installation
 
-`loamr` may be installed using the following command
+`loamr` can be installed using the following command:
 
 ``` r
 devtools::install_github("HaemAalborg/loamr")
 ```
 
-# Example
+## Example
 
 The package includes a function to simulate data from the two-way random
 effects model described in Christensen et al (2020):
 
 ``` r
 sim <- simMD(subjects=80, observers=10)
+head(sim)
+#> # A tibble: 6 x 3
+#>   subject observer   value
+#>     <int>    <int>   <dbl>
+#> 1       1        1 -0.0144
+#> 2       1        2 -0.489 
+#> 3       1        3  1.52  
+#> 4       1        4  0.972 
+#> 5       1        5 -0.531 
+#> 6       1        6 -0.797
+```
+
+Estimate and CI for the limits of agreements with the mean:
+
+``` r
 LOAM(sim)
 #> Limits of agreement with the mean for multiple observers
 #> 
@@ -39,17 +54,25 @@ LOAM(sim)
 #> Coverage probability for the above CIs: 95%
 ```
 
-The S3 class includes a generic plotting function made with `ggplot2`.
-As the plotting is done by `ggplot2` it’s easy to change elements of the
-plot, like the title:
+The S3 class includes a generic plotting function made with `ggplot2`
+for making an agreement plot with indication of estimate and CI for the
+limits of agreement with the mean:
 
 ``` r
-plot(LOAM(sim), CItype="asym") + labs(title="Simulated Data")
+plot(LOAM(sim))
 #> Observers not illustrated as there is more than 6
-#> Warning: Ignoring unknown parameters: CItype
 ```
 
-![](man/figures/README-unnamed-chunk-4-1.png)<!-- -->
+![](man/figures/README-unnamed-chunk-5-1.png)<!-- -->
+
+Elements of the plot can be easily changed, e.g. the title:
+
+``` r
+plot(LOAM(sim)) + labs(title="Simulated Data")
+#> Observers not illustrated as there is more than 6
+```
+
+![](man/figures/README-unnamed-chunk-6-1.png)<!-- -->
 
 ## References
 
