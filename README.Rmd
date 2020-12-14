@@ -18,7 +18,7 @@ set.seed(1)
 ```
 
 # loamr: limits of agreement with the mean
-`loamr` is an `R` package for performing agreement analysis on continuous measurements made by multiple observers on a number of subjects. The package provides functions for making agreement plots and for calculating the estimate and CI for the limits of agreement with the mean proposed by Christensen et al. (2020). 
+`loamr` is an `R` package for performing agreement analysis on continuous measurements made by multiple observers. The package provides functions for making agreement plots and for calculating the estimate and CI for the limits of agreement with the mean proposed by Christensen et al. (2020). 
 
 
 ## Installation
@@ -46,7 +46,8 @@ agreement plot with indication of estimate and CI for the limits of agreement wi
 plot(LOAM(sim))
 ```
 
-Elements of the plot can be easily changed, e.g. the title:
+Elements of the plot is easily changed using functionalities from `ggplot2`. For 
+example, changing the title:
 ```{r fig.height=4, fig.width=10}
 plot(LOAM(sim)) + labs(title="Simulated Data")
 ```
