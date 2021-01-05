@@ -23,17 +23,17 @@ The package includes a function to simulate data from the two-way random
 effects model described in Christensen et al (2020):
 
 ``` r
-sim <- simMD(subjects=80, observers=10)
+sim <- simMD(subjects = 80, observers = 10, mu = 5)
 head(sim)
 #> # A tibble: 6 x 3
-#>   subject observer   value
-#>     <int>    <int>   <dbl>
-#> 1       1        1 -0.0144
-#> 2       1        2 -0.489 
-#> 3       1        3  1.52  
-#> 4       1        4  0.972 
-#> 5       1        5 -0.531 
-#> 6       1        6 -0.797
+#>   subject observer value
+#>     <int>    <int> <dbl>
+#> 1       1        1  4.99
+#> 2       1        2  4.51
+#> 3       1        3  6.52
+#> 4       1        4  5.97
+#> 5       1        5  4.47
+#> 6       1        6  4.20
 ```
 
 Estimate and CI for the limits of agreements with the mean:
@@ -68,7 +68,7 @@ Elements of the plot is easily changed using functionalities from
 `ggplot2`. For example, changing the title:
 
 ``` r
-plot(LOAM(sim)) + labs(title="Simulated Data")
+plot(LOAM(sim)) + labs(title = "Simulated Data")
 ```
 
 ![](man/figures/README-unnamed-chunk-6-1.png)<!-- -->
