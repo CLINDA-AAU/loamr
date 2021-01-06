@@ -3,6 +3,7 @@
 S3method(plot,loamobject)
 S3method(print,loamobject)
 export(LOAM)
+export(LOAM_ci_width)
 export(simMD)
 import(dplyr)
 import(ggplot2)
