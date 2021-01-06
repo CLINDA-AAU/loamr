@@ -1,4 +1,4 @@
-article
 ^.*\.Rproj$
 ^\.Rproj\.user$
 README.Rmd
+Woo et al

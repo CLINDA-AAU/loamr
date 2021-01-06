@@ -1,0 +1,146 @@
+---
+title: "Limits of agreement with the mean (LOAM) for Woo et al."
+output:
+  word_document: 
+    fig_caption: yes
+
+references:
+- id: woo2020
+  title: Retrospective comparison of approaches to evaluating inter-observer variability in CT tumour measurements in an academic health centre
+  author:
+  - family: Woo
+    given: MinJae
+  - family: Heo
+    given: Moonseong
+  - family: Devane
+    given: A Michael
+  - family: Lowe
+    given: Steven C
+  - family: Gimbel
+    given: Ronald W
+  container-title: Nature Materials
+  volume: 11
+  issue: 4
+  type: article-journal
+  issued:
+    year: 2012
+    
+- id: christensen
+  title: On Jones et al.'s method for extending Bland-Altman plots to limits of agreement with the mean for multiple observers
+  author:
+  - family: Christensen
+    given: Heidi S
+  - family: Borgbjerg
+    given: Jens
+  - family: Børty
+    given: Lars
+  - family: Bøgsted
+    given: Martin
+  container-title: BMC Medical Research Methodology
+  volume: 20
+  issue: 1
+  type: article-journal
+  issued:
+    year: 2020
+---
+
+
+```{r include=FALSE}
+library(knitr)
+library(loamr)
+library(tidyverse)
+library(patchwork)
+
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+obs <- read.csv("data/observed.csv",  header = F)
+inc <- read.csv("data/increased.csv", header = F)
+dec <- read.csv("data/decreased.csv", header = F)
+
+df.obs <- obs %>% 
+  mutate(subject = 1:nrow(.)) %>% 
+  gather(observer, value, -subject) %>% 
+  mutate(observer = as.numeric(sub(".", "", observer)))
+
+df.inc <- inc %>% 
+  mutate(subject = 1:nrow(.)) %>% 
+  gather(observer, value, -subject) %>% 
+  mutate(observer = as.numeric(sub(".", "", observer)))
+
+df.dec <- dec %>% 
+  mutate(subject = 1:nrow(.)) %>% 
+  gather(observer, value, -subject) %>% 
+  mutate(observer = as.numeric(sub(".", "", observer)))
+
+df.all <- bind_rows(list(Observed  = df.obs, 
+                         Decreased = df.dec, 
+                         Increased = df.inc), .id = "df") %>% 
+  mutate(df = factor(df, levels = c("Decreased", "Observed", "Increased")))
+```
+
+
+Woo et al. have provided an open access dataset based on the diameters of 10 CT 
+metastatic lesions measured by 13 observers [@woo2020]. This dataset was 
+supplemented by two additional datasets where increased and decreased measurement 
+variability was simulated from the aforementioned dataset. For each of these three
+datasets, agreement plots as well as estimates and 
+for the 95% limits of agreement with the mean (LOAM) and the subject, observer, 
+and residual standard deviation components from the underlying two-way random 
+model [see @christensen] can be found in the following.
+
+## The three datasets
+```{r, fig.width = 7.5, fig.height = 5.5, fig.cap = "\\label{fig:data}Plot of the measurements from each of the three datasets."}
+df.all %>% 
+  ggplot(aes(factor(subject), value, color = df)) +
+  geom_jitter(position = position_dodge(0.5)) +
+  labs(color = "Dataset", x = "CT image set", y = "Measurement") +
+  theme_bw() + theme(panel.grid.major = element_blank(),
+                     panel.grid.minor = element_blank())
+```
+
+&nbsp;
+
+## Agreement plots
+```{r, fig.width = 8, fig.height=4, fig.cap = "\\label{fig:agreeplot}Agreement plots with estimates (dashed line) and 95% CIs (shaded regions) for the 95% LOAM from @christensen."}
+plot(LOAM(df.dec)) + 
+    scale_y_continuous(limits = c(-1.4, 1.4)) +
+    labs(title = NULL, subtitle = "Decreased") +
+    theme(plot.subtitle = element_text(hjust = 0.5)) +
+  plot(LOAM(df.obs)) + 
+    scale_y_continuous(limits = c(-1.4, 1.4)) +
+    labs(title = NULL, subtitle = "Observed") +
+    theme(plot.subtitle = element_text(hjust = 0.5)) +
+  plot(LOAM(df.inc)) + 
+    scale_y_continuous(limits = c(-1.4, 1.4)) +
+    labs(title = NULL, subtitle = "Increased") +
+    theme(plot.subtitle = element_text(hjust = 0.5)) 
+```
+
+&nbsp;
+
+## Estimates and CIs 
+
+```{r}
+LOAM.dec <- LOAM(df.dec)
+
+est <- lapply(c("Decreased", "Observed", "Increased"), 
+       function(x){
+         res <- LOAM(df.all %>% filter(df == !!x))
+         out <- paste0(round(res$estimates, 2), 
+                       " (", round(res$intervals[1, ], 2), 
+                       ", ", round(res$intervals[2, ], 2), ")")
+         out <- data.frame(x, t(out))
+         colnames(out) <- c("Data", colnames(res$estimates))
+         subset(out, select = -ICC)
+}); est <- do.call(rbind, est)
+
+colnames(est) <- c("Dataset", "LOAM (CI)", "$\\hat\\sigma_A$ (CI)", "$\\hat\\sigma_B$ (CI)",
+                   "$\\hat\\sigma_E (CI)$")
+kable(est, escape = F, caption = "Estimates and 95% CIs for the upper 95% LOAM and 
+the standard deviation components for subject, observer and residual variation ($\\sigma_A$, $\\sigma_B$, and $\\sigma_E$, respectively) 
+from the two-way random model in @christensen.")
+```
+
+# References
