@@ -1,19 +1,21 @@
-#' simMD function 18-12-19
+#' simMD function, updated 08-07-2025
 #'
-#' @description Simulates data from the random effect models described in
-#' \insertCite{christensen;textual}{loamr}
+#' @description Simulates data from a two-way random effect model given by the formula A + B, where A denotes subject and B observer, as in \insertCite{christensen;textual}{loamr}.
+#' An interaction term can also be included, i.e. A + B + AB.
 #'
-#' @details The function returns a dataframe
 #'
-#' @param subjects number of subjects
-#' @param observers number of observers
-#' @param measurements number of measurements
 #' @param mu overall mean
 #' @param sigma2A inter-subject variance
 #' @param sigma2B inter-observer variance
 #' @param sigma2E residual variance
+#' @param sigma2AB subject-observer interaction variance, only used if 'interaction = T'
+#' @param interaction logical, indicates if subject-observer interaction should be included in the two-way random effects model
+#' @param n_subjects number of subjects
+#' @param n_observers number of observers
+#' @param n_measurements number of measurements per subject-observer pair
 #'
-#' @return A dataframe of simulated measurements. The data frame is in the format
+#'
+#' @return A tibble of simulated measurements. The tibble is in the format
 #' required for the 'LOAM'-function.
 #'
 #' @references
@@ -30,27 +32,75 @@
 #' @importFrom dplyr bind_rows
 #'
 
-simMD <- function(subjects = 15, observers = 20, measurements = 1, mu = 0, sigma2A = 0.1, sigma2B = 0.1, sigma2E = 0.5) {
+simMD <- function(mu = 0,
+                  sigma2A, sigma2B, sigma2E,
+                  sigma2AB = NULL, interaction = F,
+                  n_subjects = 15, n_observers = 20, n_measurements = 1){
 
-    SigmaA <- sigma2A * kronecker(kronecker(diag(subjects), matrix(1, nrow = observers, ncol = observers)),
-                                  matrix(1, nrow = measurements, ncol = measurements))
-    SigmaB <- sigma2B * kronecker(kronecker(matrix(1, nrow = subjects, ncol = subjects), diag(observers)),
-                                  matrix(1, nrow = measurements, ncol = measurements))
-    SigmaE <- sigma2E * diag(subjects * observers * measurements)
+  stopifnot(length(sigma2A) == 1,
+            length(sigma2B) == 1,
+            length(sigma2E) == 1,
+            sigma2A > 0,
+            sigma2B > 0,
+            sigma2E > 0)
 
-    Sigma  <- SigmaA + SigmaB + SigmaE
-    values <- mvrnorm(1, mu = rep(mu, subjects * observers * measurements), Sigma = Sigma)
+  if(interaction){
+    if (is.null(sigma2AB)){
+      stop("sigma2AB must be supplied when 'interaction = T'")
+    }
 
-    dat <- tibble(subject     = rep(1:subjects, each = observers * measurements),
-                  observer    = rep(rep(1:observers, each = measurements), times = subjects),
-                  measurement = rep(1:measurements, times = subjects * observers),
-                  value       = values)
+    stopifnot(
+      length(sigma2AB) == 1,
+      sigma2AB > 0
+    )
+  } else{
+    if (!is.null(sigma2AB)){
+      warning("sigma2AB will not be used as 'interaction = F'")
+    }
+  }
 
-    if (measurements == 1) {
-      dat$measurement <- NULL
-      }
+  # Construct variance-covariance matrix:
+  a <- n_subjects
+  b <- n_observers
+  h <- n_measurements
 
-    return(dat)
+  SigmaA <-
+    sigma2A * kronecker(diag(a), matrix(1, nrow = b * h, ncol = b * h))
+
+  SigmaB <-
+    sigma2B * kronecker(matrix(1, nrow = a, ncol = a),
+                        kronecker(diag(b), matrix(1, nrow = h, ncol = h)))
+
+  SigmaE <- sigma2E * diag(a * b * h)
+
+
+  if(interaction){
+    SigmaAB <-
+      sigma2AB * kronecker(diag(a * b), matrix(1, ncol = h, nrow = h))
+
+    Sigma <-  SigmaA + SigmaB + SigmaAB + SigmaE
+
+  } else{
+    Sigma <-  SigmaA + SigmaB + SigmaE
+  }
+
+
+  # Simulate
+  values <- mvrnorm(1, mu = rep(mu, a * b * h),
+                    Sigma = Sigma)
+
+
+  dat <- tibble(subject     = rep(1:a, each = b * h),
+                observer    = rep(rep(1:b, each = h), times = a),
+                measurement = rep(1:h, times = a * b),
+                value       = values)
+
+  if (h == 1) {
+    dat$measurement <- NULL
+  }
+
+  return(dat)
 }
+
 
 
