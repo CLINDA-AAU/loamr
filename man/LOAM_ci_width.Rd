@@ -4,42 +4,59 @@
 \alias{LOAM_ci_width}
 \title{Width of CI for LOAM (for sample size calculation)}
 \usage{
-LOAM_ci_width(a, b, c, sigma2B_0, sigma2E_0, CI = 0.95)
+LOAM_ci_width(
+  n_subjects,
+  n_observers,
+  n_measurements,
+  sigma2B_0,
+  sigma2E_0,
+  sigma2AB_0 = NULL,
+  interaction = F,
+  CI.coverage = 0.95
+)
 }
 \arguments{
-\item{a}{number of subjects}
+\item{n_subjects}{number of subjects}
 
-\item{b}{number of observers}
+\item{n_observers}{number of observers}
 
-\item{c}{number of measurements per observer per subject}
+\item{n_measurements}{number of measurements per observer per subject}
 
-\item{sigma2B_0}{observer variance}
+\item{sigma2B_0}{initial estimate of observer variance}
 
-\item{sigma2E_0}{residual variance}
+\item{sigma2E_0}{initial estimate of residual variance}
 
-\item{CI}{coverage probability for the confidence interval on the LOAM.}
+\item{sigma2AB_0}{initial estimate of subject-observer interaction variance, only used if 'interaction = T'}
+
+\item{interaction}{logical, ogical, indicates if subject-observer interaction should be included in the two-way random effects model}
+
+\item{CI.coverage}{coverage probability for the confidence interval on the reproducibility LOAM.}
 }
 \value{
-Width of the CI for the 95\% LOAM for the selected parameter values.
+Width of the CI for the 95\% reproducbility LOAM for the selected parameter values.
 }
 \description{
 Width of the confidence intervals for the
 95\% limits of agreement with the mean for specified parameter values (\insertCite{christensen;textual}{loamr}).
 }
 \details{
-Given initial estimates of the observer and residual variance
-components (\code{sigma2B_0} and \code{sigma2E_0}, respectively) we can determine the width
-of the CI for the 95\% LOAM for specified numbers of subjects, observers, and
-measurements per observer per subject (\code{a}, \code{b}, and \code{c}, respectively)
+Given initial estimates of the observer, subject-observer
+(if interaction included), and residual variance components
+(\code{sigma2B_0}, \code{sigma2AB_0}, and \code{sigma2E_0}, respectively)
+we can determine the width of the CI for the 95\% reproducibility LOAM for
+specified numbers of subjects, observers, and measurements per observer per subject
+(\code{n_subjects}, \code{n_observers}, and \code{n_measurements}, respectively)
 (\insertCite{christensen;textual}{loamr}).
 
-One of \code{a}, \code{b}, and \code{c} is allowed to be a vector of length
-greater than one. Usually, \code{a} and \code{c} are fixed, while we want to
+One of \code{n_subjects}, \code{n_observers}, and \code{n_measurements} is
+allowed to be a vector of length > 1. Usually, \code{n_subjects} and
+\code{n_measurements} are fixed, while we want to
 determine how many observers, \code{b}, we need to obtain a certain width of
-the CI for the LOAM.
+the CI for the reproducibility LOAM.
 }
 \examples{
-LOAM_ci_width(a = 20, b = 4:10, c = 2, sigma2B_0 = 0.5, sigma2E_0 = 1)
+LOAM_ci_width(n_subjects = 20,  n_observers = 4:10, n_measurements = 2,
+sigma2B_0 = 0.5, sigma2E_0 = 1)
 
 
 }

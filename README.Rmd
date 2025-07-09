@@ -11,8 +11,6 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-"
 )
 library(knitr)
-library(tidyverse)
-library(gridExtra)
 library(loamr)
 set.seed(1)
 ```
@@ -29,10 +27,10 @@ devtools::install_github("HaemAalborg/loamr")
 
 ## Example
 The package includes a function to simulate data from the two-way random effects model
-described in Christensen et al (2020):
+described in Christensen et al. (2020):
 
 ```{r}
-sim <- simMD(subjects = 80, observers = 10, mu = 5)
+sim <- simMD(mu = 5)
 head(sim)
 ```
 Estimate and CI for the limits of agreements with the mean:
@@ -49,7 +47,7 @@ plot(LOAM(sim))
 Elements of the plot is easily changed using functionalities from `ggplot2`. For 
 example, changing the title:
 ```{r fig.height=4, fig.width=10}
-plot(LOAM(sim)) + labs(title = "Simulated Data")
+plot(LOAM(sim)) + ggplot2::labs(title = "Simulated Data")
 ```
 
 

@@ -2,25 +2,21 @@
 % Please edit documentation in R/simMD.R
 \name{simMD}
 \alias{simMD}
-\title{simMD function 18-12-19}
+\title{simMD function, updated 08-07-2025}
 \usage{
 simMD(
-  subjects = 15,
-  observers = 20,
-  measurements = 1,
   mu = 0,
-  sigma2A = 0.1,
-  sigma2B = 0.1,
-  sigma2E = 0.5
+  sigma2A = 2,
+  sigma2B = 1,
+  sigma2E = 0.5,
+  sigma2AB = NULL,
+  interaction = F,
+  n_subjects = 15,
+  n_observers = 20,
+  n_measurements = 1
 )
 }
 \arguments{
-\item{subjects}{number of subjects}
-
-\item{observers}{number of observers}
-
-\item{measurements}{number of measurements}
-
 \item{mu}{overall mean}
 
 \item{sigma2A}{inter-subject variance}
@@ -28,17 +24,24 @@ simMD(
 \item{sigma2B}{inter-observer variance}
 
 \item{sigma2E}{residual variance}
+
+\item{sigma2AB}{subject-observer interaction variance, only used if 'interaction = T'}
+
+\item{interaction}{logical, indicates if subject-observer interaction should be included in the two-way random effects model}
+
+\item{n_subjects}{number of subjects}
+
+\item{n_observers}{number of observers}
+
+\item{n_measurements}{number of measurements per subject-observer pair}
 }
 \value{
-A dataframe of simulated measurements. The data frame is in the format
+A tibble of simulated measurements. The tibble is in the format
 required for the 'LOAM'-function.
 }
 \description{
-Simulates data from the random effect models described in
-\insertCite{christensen;textual}{loamr}
-}
-\details{
-The function returns a dataframe
+Simulates data from a two-way random effect model given by the formula A + B, where A denotes subject and B observer, as in \insertCite{christensen;textual}{loamr}.
+An interaction term can also be included, i.e. A + B + AB.
 }
 \examples{
 simMD()

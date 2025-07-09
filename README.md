@@ -20,20 +20,20 @@ devtools::install_github("HaemAalborg/loamr")
 ## Example
 
 The package includes a function to simulate data from the two-way random
-effects model described in Christensen et al (2020):
+effects model described in Christensen et al. (2020):
 
 ``` r
-sim <- simMD(subjects = 80, observers = 10, mu = 5)
+sim <- simMD(mu = 5)
 head(sim)
-#> # A tibble: 6 x 3
+#> # A tibble: 6 × 3
 #>   subject observer value
 #>     <int>    <int> <dbl>
-#> 1       1        1  4.99
-#> 2       1        2  4.51
-#> 3       1        3  6.52
-#> 4       1        4  5.97
-#> 5       1        5  4.47
-#> 6       1        6  4.20
+#> 1       1        1  4.36
+#> 2       1        2  4.72
+#> 3       1        3  3.99
+#> 4       1        4  5.28
+#> 5       1        5  5.26
+#> 6       1        6  3.67
 ```
 
 Estimate and CI for the limits of agreements with the mean:
@@ -42,14 +42,14 @@ Estimate and CI for the limits of agreements with the mean:
 LOAM(sim)
 #> Limits of agreement with the mean for multiple observers
 #> 
-#> The data has 800 observations from 80 individuals by 10 observers with 1 measurements
+#> The data has 300 observations from 15 individuals by 20 observers with 1 measurements
 #> 
-#> LOAM:  +/- 1.438 (1.363, 1.616)
+#> LOAM:  +/- 1.387 (1.283, 1.549)
 #> 
-#> sigmaA:    0.264 (0.190, 0.337)
-#> sigmaB:    0.235 (0.113, 0.357)
-#> sigmaE:    0.737 (0.700, 0.777)
-#> ICC(A,1):  0.104 (0.057, 0.170)
+#> sigmaA:    0.322 (0.176, 0.469)
+#> sigmaB:    0.235 (0.117, 0.352)
+#> sigmaE:    0.687 (0.633, 0.751)
+#> ICC(A,1):  0.164 (0.075, 0.360)
 #> 
 #> Coverage probability for the above CIs: 95%
 ```
@@ -68,7 +68,7 @@ Elements of the plot is easily changed using functionalities from
 `ggplot2`. For example, changing the title:
 
 ``` r
-plot(LOAM(sim)) + labs(title = "Simulated Data")
+plot(LOAM(sim)) + ggplot2::labs(title = "Simulated Data")
 ```
 
 ![](man/figures/README-unnamed-chunk-6-1.png)<!-- -->

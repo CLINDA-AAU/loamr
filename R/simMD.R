@@ -29,11 +29,10 @@
 #' @export
 #' @importFrom MASS mvrnorm
 #' @importFrom tibble tibble
-#' @importFrom dplyr bind_rows
 #'
 
 simMD <- function(mu = 0,
-                  sigma2A, sigma2B, sigma2E,
+                  sigma2A = 2, sigma2B = 1, sigma2E = 0.5,
                   sigma2AB = NULL, interaction = F,
                   n_subjects = 15, n_observers = 20, n_measurements = 1){
 
