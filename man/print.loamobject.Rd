@@ -2,7 +2,7 @@
 % Please edit documentation in R/generic_functions.R
 \name{print.loamobject}
 \alias{print.loamobject}
-\title{Adding to the generic print function}
+\title{Print output from 'LOAM' function}
 \usage{
 \method{print}{loamobject}(x, digits = 3, ...)
 }
@@ -14,5 +14,5 @@
 \item{...}{passthrough}
 }
 \description{
-Adding to the generic print function
+Print output from 'LOAM' function
 }

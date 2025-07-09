@@ -2,7 +2,7 @@
 % Please edit documentation in R/simMD.R
 \name{simMD}
 \alias{simMD}
-\title{simMD function, updated 08-07-2025}
+\title{Simulates data from a two-way random effect model}
 \usage{
 simMD(
   mu = 0,

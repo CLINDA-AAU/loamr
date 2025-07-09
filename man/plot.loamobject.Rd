@@ -2,7 +2,7 @@
 % Please edit documentation in R/generic_functions.R
 \name{plot.loamobject}
 \alias{plot.loamobject}
-\title{Adding to the generic plot function}
+\title{Plot output from 'LOAM' function}
 \usage{
 \method{plot}{loamobject}(x, ...)
 }
@@ -15,5 +15,5 @@
 An agreement plot with an estimate and CI for the 95\% reproducibility limits of agreement with the mean
 }
 \description{
-Adding to the generic plot function
+Plot output from 'LOAM' function
 }

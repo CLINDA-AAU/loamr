@@ -2,7 +2,7 @@
 % Please edit documentation in R/LOAM.R
 \name{LOAM}
 \alias{LOAM}
-\title{Function LOAM 13-01-20}
+\title{Limits of agreement with the mean}
 \usage{
 LOAM(data, interaction = F, CI.coverage = 0.95)
 }

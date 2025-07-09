@@ -2,7 +2,7 @@
 % Please edit documentation in R/LOAM_ci_width.R
 \name{LOAM_ci_width}
 \alias{LOAM_ci_width}
-\title{Width of CI for LOAM (for sample size calculation)}
+\title{Width of CI for reproducibility LOAM (for sample size calculation)}
 \usage{
 LOAM_ci_width(
   n_subjects,
@@ -33,11 +33,11 @@ LOAM_ci_width(
 \item{CI.coverage}{coverage probability for the confidence interval on the reproducibility LOAM.}
 }
 \value{
-Width of the CI for the 95\% reproducbility LOAM for the selected parameter values.
+Width of the CI for the 95\% reproducibility LOAM for the selected parameter values.
 }
 \description{
 Width of the confidence intervals for the
-95\% limits of agreement with the mean for specified parameter values (\insertCite{christensen;textual}{loamr}).
+95\% reproducibility limits of agreement with the mean for specified parameter values (\insertCite{christensen;textual}{loamr}).
 }
 \details{
 Given initial estimates of the observer, subject-observer
