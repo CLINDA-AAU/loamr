@@ -1,4 +1,4 @@
-#' Function LOAM 13-01-20
+#' Limits of agreement with the mean
 #'
 #' @description This function calculates estimates and confidence intervals for the
 #' 95\% limits of agreement with the mean (LOAM) \insertCite{christensen;textual}{loamr}.

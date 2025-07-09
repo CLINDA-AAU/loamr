@@ -1,4 +1,4 @@
-#' Adding to the generic print function
+#' Print output from 'LOAM' function
 #'
 #' @param x an object of class 'loamobject'
 #' @param digits number of digits shown in printed output
@@ -39,7 +39,7 @@ print.loamobject <- function(x, digits = 3, ...) {
   cat("\n")
 }
 
-#' Adding to the generic plot function
+#' Plot output from 'LOAM' function
 #'
 #' @param x an object of class 'loamobject'
 #' @param ... passthrough

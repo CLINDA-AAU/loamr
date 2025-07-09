@@ -1,4 +1,4 @@
-#' simMD function, updated 08-07-2025
+#' Simulates data from a two-way random effect model
 #'
 #' @description Simulates data from a two-way random effect model given by the formula A + B, where A denotes subject and B observer, as in \insertCite{christensen;textual}{loamr}.
 #' An interaction term can also be included, i.e. A + B + AB.

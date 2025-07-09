@@ -1,7 +1,7 @@
-#' Width of CI for LOAM (for sample size calculation)
+#' Width of CI for reproducibility LOAM (for sample size calculation)
 #'
 #' @description Width of the confidence intervals for the
-#' 95\% limits of agreement with the mean for specified parameter values (\insertCite{christensen;textual}{loamr}).
+#' 95\% reproducibility limits of agreement with the mean for specified parameter values (\insertCite{christensen;textual}{loamr}).
 #'
 #' @details Given initial estimates of the observer, subject-observer
 #' (if interaction included), and residual variance components
@@ -29,7 +29,7 @@
 #' @references
 #' \insertRef{christensen}{loamr}
 #'
-#' @return Width of the CI for the 95\% reproducbility LOAM for the selected parameter values.
+#' @return Width of the CI for the 95\% reproducibility LOAM for the selected parameter values.
 #'
 #' @examples
 #' LOAM_ci_width(n_subjects = 20,  n_observers = 4:10, n_measurements = 2,
