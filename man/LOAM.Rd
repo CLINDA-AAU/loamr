@@ -4,19 +4,23 @@
 \alias{LOAM}
 \title{Function LOAM 13-01-20}
 \usage{
-LOAM(data, CI = 0.95)
+LOAM(data, interaction = F, CI.coverage = 0.95)
 }
 \arguments{
 \item{data}{a data frame containing measurement data in long format (see 'Details')}
 
-\item{CI}{coverage probability for the confidence interval on the LOAM.}
+\item{interaction}{logical, indicates if subject-observer interaction should be included in the two-way random effects model}
+
+\item{CI.coverage}{coverage probability for the confidence interval on the LOAM.}
 }
 \value{
 An object of class "loamobject".
 }
 \description{
 This function calculates estimates and confidence intervals for the
-95\% limits of agreement with the mean presented by \insertCite{christensen;textual}{loamr}.
+95\% limits of agreement with the mean (LOAM) \insertCite{christensen;textual}{loamr}.
+It provides both the reproducibility LOAM and the repeatibility LOAM
+(when > 1 measurement per observer per subject).
 }
 \details{
 The data argument requires data in long/narrow format with
@@ -36,10 +40,17 @@ per observer per subject, this column is not required.
 The procedure requires balanced data, meaning that all observers must have measured
 all subjects the same number of times.
 
-The function outputs estimates and approximate CIs for the LOAM, the
-intra-class correlation, \eqn{\sigma_A}, \eqn{\sigma_B}, and \eqn{\sigma_E}, where
-\eqn{\sigma_A^2}, \eqn{\sigma_B^2}, and \eqn{\sigma_E^2} are the variance components of the underlying
-two-way random model.  See \insertCite{christensen;textual}{loamr} for details.
+The function outputs estimates and CIs for the reproducibility LOAM under a
+two-way random effects model with or without interaction. Further, estimate
+and CIs for \eqn{\sigma_A}, \eqn{\sigma_B}, \eqn{\sigma_AB} (if interaction included)
+and \eqn{\sigma_E} are supplied, where  \eqn{\sigma_A^2} is the subject variance,
+\eqn{\sigma_B^2} the observer variance, ' \eqn{\sigma_AB^2} the
+observer-sujebct interaction variance, and \eqn{\sigma_E^2} the residual variance.
+If >1 measurement per observer per subject, estimate and CI for repeatibility
+LOAM is supplied.
+If only one measurement per observer per subject, estimate and CI for the
+intra-class correlation ICC(A, 1) is supplied.
+See \insertCite{christensen;textual}{loamr} for details.
 }
 \examples{
 data(Borgbjerg)
