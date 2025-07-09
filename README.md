@@ -14,7 +14,7 @@ et al. (2020).
 `loamr` can be installed using the following command:
 
 ``` r
-devtools::install_github("HaemAalborg/loamr")
+devtools::install_github("CLINDA-AAU/loamr")
 ```
 
 ## Example
@@ -28,12 +28,12 @@ head(sim)
 #> # A tibble: 6 × 3
 #>   subject observer value
 #>     <int>    <int> <dbl>
-#> 1       1        1  4.36
-#> 2       1        2  4.72
-#> 3       1        3  3.99
-#> 4       1        4  5.28
-#> 5       1        5  5.26
-#> 6       1        6  3.67
+#> 1       1        1  4.93
+#> 2       1        2  5.89
+#> 3       1        3  6.69
+#> 4       1        4  5.10
+#> 5       1        5  7.70
+#> 6       1        6  4.55
 ```
 
 Estimate and CI for the limits of agreements with the mean:
@@ -42,14 +42,14 @@ Estimate and CI for the limits of agreements with the mean:
 LOAM(sim)
 #> Limits of agreement with the mean for multiple observers
 #> 
-#> The data has 300 observations from 15 individuals by 20 observers with 1 measurements
+#> The data has 300 observations from 15 individuals by 20 observers with 1 repeated measurements
 #> 
-#> LOAM:  +/- 1.387 (1.283, 1.549)
+#> 95% reproducibility LOAM:  +/- 2.013 (1.730, 2.616)
 #> 
-#> sigmaA:    0.322 (0.176, 0.469)
-#> sigmaB:    0.235 (0.117, 0.352)
+#> sigmaA:    1.428 (0.893, 1.963)
+#> sigmaB:    0.799 (0.533, 1.066)
 #> sigmaE:    0.687 (0.633, 0.751)
-#> ICC(A,1):  0.164 (0.075, 0.360)
+#> ICC(A,1):  0.647 (0.459, 0.830)
 #> 
 #> Coverage probability for the above CIs: 95%
 ```
