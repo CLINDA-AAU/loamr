@@ -130,7 +130,7 @@ LOAM <- function(data, interaction = F, CI.coverage = 0.95) {
   } else{
     sigma2A <- (MSA - MSE) / (b * h)
     sigma2B <- (MSB - MSE) / (a * h)
-    sigmaAB <- ""
+    sigmaAB <- NULL
   }
 
   sigmaA <- ifelse(sigma2A >= 0, sqrt(sigma2A), NA)
@@ -143,7 +143,7 @@ LOAM <- function(data, interaction = F, CI.coverage = 0.95) {
   if(h > 1){
     LOAM_repeat <- z * sqrt((h - 1) / h * sigma2E)
   } else{
-    LOAM_repeat <- ""
+    LOAM_repeat <- NULL
   }
 
   if(interaction){
@@ -179,8 +179,6 @@ LOAM <- function(data, interaction = F, CI.coverage = 0.95) {
   if(h > 1){
     repeat_CI <- c(z * sqrt( (h - 1) * SSE / (h * qchisq(up, vE))),
                    z * sqrt( (h - 1) * SSE / (h * qchisq(lo, vE))))
-  } else{
-    repeat_CI <- NA
   }
 
   # CI for variance components
@@ -213,8 +211,6 @@ LOAM <- function(data, interaction = F, CI.coverage = 0.95) {
       sigmaAB_CI <- NA
       warning("Estimate of sigma2AB < 0.")
     }
-  } else{
-    sigmaAB_CI <- NA
   }
 
   sigmaE_CI <- c(sigmaE * sqrt(vE / qchisq(up, vE)),
@@ -235,17 +231,23 @@ LOAM <- function(data, interaction = F, CI.coverage = 0.95) {
     upp_denom <- b * MSB + (a * b - a - b) * MSE + a * FU * MSA
     ICC_CI    <- c(low_num / low_denom, upp_num / upp_denom)
   } else {
-    ICC       <- ""
-    ICC_CI    <- ""
+    ICC       <- NULL
   }
 
+  estimates <- tibble(LOAM_reprod, LOAM_repeat,
+                      sigmaA, sigmaB, sigmaAB, sigmaE,
+                      ICC)
+
+  intervals <- tibble(reprod_CI,
+                      repeat_CI = if(!is.null(LOAM_repeat)) repeat_CI else NULL,
+                      sigmaA_CI,  sigmaB_CI,
+                      sigmaAB_CI = if(!is.null(sigmaAB)) sigmaAB_CI else NULL,
+                      sigmaE_CI,
+                      ICC_CI = if(!is.null(ICC)) ICC_CI else NULL)
+
   result <- list(data        = da,
-                 estimates   = data.frame(LOAM_reprod, LOAM_repeat, sigmaA,
-                                          sigmaB, sigmaAB, sigmaE, ICC),
-                 intervals   = data.frame(reprod_CI,  repeat_CI,
-                                          sigmaA_CI,  sigmaB_CI,
-                                          sigmaAB_CI, sigmaE_CI,
-                                          ICC_CI),
+                 estimates   = estimates,
+                 intervals   = intervals,
                  CI.coverage = CI.coverage)
 
   class(result) <- "loamobject"
