@@ -16,7 +16,7 @@ print.loamobject <- function(x, digits = 3, ...) {
       "individuals by", length(unique(x[[1]]$observer)), "observers with", length(unique(x[[1]]$measurement)),"repeated measurements")
   cat("\n\n")
   cat("95% reproducibility LOAM:  +/- ", fm(x$estimates$LOAM_reprod), " (", fm(x$intervals$reprod_CI[1]), ", ", fm(x$intervals$reprod_CI[2]), ")", sep = "")
-  if(!(x$estimates$LOAM_repeat == "")){
+  if("LOAM_repeat" %in% names(x$estimates)){
     cat("\n")
     cat("95% repeability LOAM:      +/- ", fm(x$estimates$LOAM_repeat), " (", fm(x$intervals$repeat_CI[1]), ", ", fm(x$intervals$repeat_CI[2]), ")", sep = "")
   }
@@ -24,14 +24,14 @@ print.loamobject <- function(x, digits = 3, ...) {
   cat("sigmaA:    ", fm(x$estimates$sigmaA),  " (", fm(x$intervals$sigmaA_CI[1]),  ", ", fm(x$intervals$sigmaA_CI[2]),  ")", sep = "")
   cat("\n")
   cat("sigmaB:    ", fm(x$estimates$sigmaB),  " (", fm(x$intervals$sigmaB_CI[1]),  ", ", fm(x$intervals$sigmaB_CI[2]),  ")", sep = "")
-  if(!(x$estimates$sigmaAB == "")){
+  if("sigmaAB"  %in% names(x$estimates)){
     cat("\n")
     cat("sigmaAB:   ", fm(x$estimates$sigmaAB), " (", fm(x$intervals$sigmaAB_CI[1]), ", ", fm(x$intervals$sigmaAB_CI[2]), ")", sep = "")
   }
   cat("\n")
   cat("sigmaE:    ", fm(x$estimates$sigmaE),  " (", fm(x$intervals$sigmaE_CI[1]),  ", ", fm(x$intervals$sigmaE_CI[2]),  ")", sep = "")
-  cat("\n")
-  if (!(x$estimates$ICC == "")) {
+  if ("ICC" %in% names(x$estimates)) {
+    cat("\n")
     cat("ICC(A,1):  ", fm(x$estimates$ICC), " (", fm(x$intervals$ICC_CI[1]), ", ", fm(x$intervals$ICC_CI[2]), ")", sep = "")
   }
   cat("\n\n")
