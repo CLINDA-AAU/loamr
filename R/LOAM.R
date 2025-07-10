@@ -130,7 +130,7 @@ LOAM <- function(data, interaction = F, CI.coverage = 0.95) {
   } else{
     sigma2A <- (MSA - MSE) / (b * h)
     sigma2B <- (MSB - MSE) / (a * h)
-    sigmaAB <- "-"
+    sigmaAB <- ""
   }
 
   sigmaA <- ifelse(sigma2A >= 0, sqrt(sigma2A), NA)
@@ -143,7 +143,7 @@ LOAM <- function(data, interaction = F, CI.coverage = 0.95) {
   if(h > 1){
     LOAM_repeat <- z * sqrt((h - 1) / h * sigma2E)
   } else{
-    LOAM_repeat <- "-"
+    LOAM_repeat <- ""
   }
 
   if(interaction){
@@ -235,8 +235,8 @@ LOAM <- function(data, interaction = F, CI.coverage = 0.95) {
     upp_denom <- b * MSB + (a * b - a - b) * MSE + a * FU * MSA
     ICC_CI    <- c(low_num / low_denom, upp_num / upp_denom)
   } else {
-    ICC       <- "-"
-    ICC_CI    <- "-"
+    ICC       <- ""
+    ICC_CI    <- ""
   }
 
   result <- list(data        = da,
