@@ -13,7 +13,8 @@ simMD(
   interaction = F,
   n_subjects = 15,
   n_observers = 20,
-  n_measurements = 1
+  n_measurements = 1,
+  n_sim = 1
 )
 }
 \arguments{
@@ -34,10 +35,15 @@ simMD(
 \item{n_observers}{number of observers}
 
 \item{n_measurements}{number of measurements per subject-observer pair}
+
+\item{n_sim}{number of simulated datasets}
 }
 \value{
 A tibble of simulated measurements. The tibble is in the format
-required for the 'LOAM'-function.
+required for the 'LOAM'-function when n_sim = 1, i.e. in long format with
+columns 'subject', 'observer', 'measurement' (if h > 1), and 'value' (= the
+simulate data). When n_sim > 1, the outputted tibble contains a column for
+each of the simulated data sets, named 'value1', 'value2', etc.
 }
 \description{
 Simulates data from a two-way random effect model given by the formula A + B, where A denotes subject and B observer, as in \insertCite{christensen;textual}{loamr}.

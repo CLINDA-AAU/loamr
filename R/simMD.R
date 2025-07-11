@@ -13,10 +13,14 @@
 #' @param n_subjects number of subjects
 #' @param n_observers number of observers
 #' @param n_measurements number of measurements per subject-observer pair
+#' @param n_sim number of simulated datasets
 #'
 #'
 #' @return A tibble of simulated measurements. The tibble is in the format
-#' required for the 'LOAM'-function.
+#' required for the 'LOAM'-function when n_sim = 1, i.e. in long format with
+#' columns 'subject', 'observer', 'measurement' (if h > 1), and 'value' (= the
+#' simulate data). When n_sim > 1, the outputted tibble contains a column for
+#' each of the simulated data sets, named 'value1', 'value2', etc.
 #'
 #' @references
 #' \insertRef{christensen}{loamr}
@@ -34,14 +38,18 @@
 simMD <- function(mu = 0,
                   sigma2A = 2, sigma2B = 1, sigma2E = 0.5,
                   sigma2AB = NULL, interaction = F,
-                  n_subjects = 15, n_observers = 20, n_measurements = 1){
+                  n_subjects = 15, n_observers = 20, n_measurements = 1,
+                  n_sim = 1){
 
   stopifnot(length(sigma2A) == 1,
             length(sigma2B) == 1,
             length(sigma2E) == 1,
             sigma2A > 0,
             sigma2B > 0,
-            sigma2E > 0)
+            sigma2E > 0,
+            length(n_subjects)     == 1,
+            length(n_observers)    == 1,
+            length(n_measurements) == 1)
 
   if(interaction){
     if (is.null(sigma2AB)){
@@ -83,19 +91,18 @@ simMD <- function(mu = 0,
     Sigma <-  SigmaA + SigmaB + SigmaE
   }
 
-
   # Simulate
-  values <- mvrnorm(1, mu = rep(mu, a * b * h),
-                    Sigma = Sigma)
-
+  sims <- mvrnorm(n = n_sim, mu = rep(mu, a * b * h), Sigma = Sigma)
 
   dat <- tibble(subject     = rep(1:a, each = b * h),
                 observer    = rep(rep(1:b, each = h), times = a),
-                measurement = rep(1:h, times = a * b),
-                value       = values)
+                measurement = if(!(h == 1)) rep(1:h, times = a * b) else NULL)
 
-  if (h == 1) {
-    dat$measurement <- NULL
+  if(n_sim == 1){
+    dat$value <- sims
+  } else{
+    sim_names <- paste0("value", 1:n_sim)
+    dat[sim_names] <- as_tibble(t(sims))
   }
 
   return(dat)
