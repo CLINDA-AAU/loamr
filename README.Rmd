@@ -17,7 +17,7 @@ set.seed(1)
 
 # loamr: limits of agreement with the mean
 
-loamr` is an `R` package for performing agreement analysis on continuous
+`loamr` is an `R` package for performing agreement analysis on continuous
 measurements made by multiple observers. The package provides functions for
 
 * making agreement plots and calculating the estimate and CI for the limits of
@@ -37,9 +37,8 @@ devtools::install_github("CLINDA-AAU/loamr")
 
 ## Example: one measurement per subject and observer
 
-The package includes a function to simulate data from the two-way random effects
-model described in Christensen et al. (2020), as well as from the extended model
-with a subject-observer interaction term described in Christensen et al. (2025):
+The package includes a function that can simulate data under the two-way random 
+effects model described in Christensen et al. (2020):
 
 ```{r}
 sim <- simMD(mu = 5)
@@ -70,7 +69,8 @@ plot(LOAM(sim)) + ggplot2::labs(title = "Simulated Data")
 
 The **reproducibility LOAM** can always be calculated, also when there is only one
 measurement per subject and observer. When each observer measures each subject
-more than once, a **repeatability LOAM** can be calculated as well (Christensen et al. 2025):
+more than once, a **repeatability LOAM** can be calculated as well 
+(Christensen et al. 2025):
 
 * The **reproducibility LOAM** reflects all sources of variation between
   measurements on the same subject: differences between observers (and, if
@@ -78,6 +78,10 @@ more than once, a **repeatability LOAM** can be calculated as well (Christensen 
   repeated measurements.
 * The **repeatability LOAM** only reflects variation between repeated
   measurements by the *same* observer on the same subject.
+
+
+Data from the extended model of Christensen et al. (2025), including a
+subject-observer interaction term, can be simulated with `simMD()` as well:
 
 ```{r}
 sim_rep <- simMD(mu = 5, sigma2AB = 0.3, interaction = TRUE,
