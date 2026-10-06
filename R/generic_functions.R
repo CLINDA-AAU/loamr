@@ -18,7 +18,7 @@ print.loamobject <- function(x, digits = 3, ...) {
   cat("95% reproducibility LOAM:  +/- ", fm(x$estimates$LOAM_reprod), " (", fm(x$intervals$reprod_CI[1]), ", ", fm(x$intervals$reprod_CI[2]), ")", sep = "")
   if("LOAM_repeat" %in% names(x$estimates)){
     cat("\n")
-    cat("95% repeability LOAM:      +/- ", fm(x$estimates$LOAM_repeat), " (", fm(x$intervals$repeat_CI[1]), ", ", fm(x$intervals$repeat_CI[2]), ")", sep = "")
+    cat("95% repeatability LOAM:      +/- ", fm(x$estimates$LOAM_repeat), " (", fm(x$intervals$repeat_CI[1]), ", ", fm(x$intervals$repeat_CI[2]), ")", sep = "")
   }
   cat("\n\n")
   cat("sigmaA:    ", fm(x$estimates$sigmaA),  " (", fm(x$intervals$sigmaA_CI[1]),  ", ", fm(x$intervals$sigmaA_CI[2]),  ")", sep = "")
@@ -66,8 +66,8 @@ plot.loamobject <- function(x, ...) {
       ggplot(aes(x = .data$subjectMean, y = .data$centered, shape = as.factor(.data$observer))) +
       scale_shape_manual(values = 0:(b-1)) +
       geom_vline(aes(xintercept = .data$subjectMean), alpha = 0.1) +
-      geom_hline(yintercept =  est, color = "#1f78b4", linetype = "dashed")+
-      geom_hline(yintercept = -est, color = "#1f78b4", linetype = "dashed")+
+      geom_hline(yintercept =  est, color = "#1f78b4", linetype = "dashed") +
+      geom_hline(yintercept = -est, color = "#1f78b4", linetype = "dashed") +
       annotate("rect", ymin =  ci[1], ymax =  ci[2], xmin = -Inf, xmax = Inf, alpha = 0.2, fill = "#1f78b4") +
       annotate("rect", ymin = -ci[1], ymax = -ci[2], xmin = -Inf, xmax = Inf, alpha = 0.2, fill = "#1f78b4") +
       geom_point(size = 2, ...) +
@@ -76,7 +76,7 @@ plot.loamobject <- function(x, ...) {
       labs(x = ifelse(k > 1, expression(italic(bar(y)[i..])), expression(italic(bar(y)[i.]))),
            y = ifelse(k > 1, expression(italic(y[ijk] - bar(y)[i..])), expression(italic(y[ij] - bar(y)[i.]))),
            title = "Agreement plot",
-           subtitle = paste0("95% reproducbility LOAM +/- ", fm(est), " with ", x$CI.coverage*100, "% CI: (", fm(ci[1]),", ",fm(ci[2]),")"),
+           subtitle = paste0("95% reproducibility LOAM +/- ", fm(est), " with ", x$CI.coverage*100, "% CI: (", fm(ci[1]),", ",fm(ci[2]),")"),
            shape = "Observer")
 
   } else {
@@ -86,9 +86,9 @@ plot.loamobject <- function(x, ...) {
     x[[1]] %>%
       mutate(centered = .data$value - .data$subjectMean) %>%
       ggplot(aes(x = .data$subjectMean, y = .data$centered)) +
-      geom_vline(aes(xintercept = .data$subjectMean), alpha=0.1) +
-      geom_hline(yintercept =  est, color = "#1f78b4", linetype = "dashed")+
-      geom_hline(yintercept = -est, color = "#1f78b4", linetype = "dashed")+
+      geom_vline(aes(xintercept = .data$subjectMean), alpha = 0.1) +
+      geom_hline(yintercept =  est, color = "#1f78b4", linetype = "dashed") +
+      geom_hline(yintercept = -est, color = "#1f78b4", linetype = "dashed") +
       annotate("rect", ymin = ci[1],  ymax =  ci[2], xmin = -Inf, xmax = Inf, alpha = 0.2, fill = "#1f78b4") +
       annotate("rect", ymin = -ci[1], ymax = -ci[2], xmin = -Inf, xmax = Inf, alpha = 0.2, fill = "#1f78b4") +
       geom_point(size = 2, alpha = 0.5, ...) +
@@ -97,7 +97,6 @@ plot.loamobject <- function(x, ...) {
       labs(x = ifelse(k > 1, expression(italic(bar(y)[i..])), expression(italic(bar(y)[i.]))),
            y = ifelse(k > 1, expression(italic(y[ijk] - bar(y)[i..])), expression(italic(y[ij] - bar(y)[i.]))),
            title = "Agreement plot",
-           subtitle = paste0("95% reproducbility LOAM +/- ", fm(est), " with ", x$CI.coverage*100, "% CI: (", fm(ci[1]),", ",fm(ci[2]),")"),
-           shape = "Observer")
+           subtitle = paste0("95% reproducibility LOAM +/- ", fm(est), " with ", x$CI.coverage*100, "% CI: (", fm(ci[1]),", ",fm(ci[2]),")"))
   }
 }

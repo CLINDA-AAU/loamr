@@ -1,25 +1,26 @@
 Package: loamr
 Type: Package
 Title: Estimation of Limits of Agreements with the Mean
-Version: 0.0.1
+Version: 1.2.0
 Authors@R: c(
     person("Lars", "Boerty", email = "lars.borty@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-3715-8528")),
     person("Heidi", "Christensen", role = "aut"),
     person("Haematology Research Unit - Aalborg", role = "cph"))
-Description: Implementation of a new method of calculating LoAM.
+Description: Implementation of a method for calculating limits of agreements (with CI) in case of multiple observers.
     This is inspired by.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Depends: R (>= 3.5.0)
 Imports: ggplot2,
         dplyr,
         tibble,
-        knitr,
         rlang,
         MASS,
         magrittr,
-        tidyr,
         Rdpack
+Suggests:
+        lme4,
+        knitr
 RdMacros: Rdpack

@@ -1,7 +1,10 @@
 #' Simulates data from a two-way random effect model
 #'
-#' @description Simulates data from a two-way random effect model given by the formula A + B, where A denotes subject and B observer, as in \insertCite{christensen;textual}{loamr}.
-#' An interaction term can also be included, i.e. A + B + AB.
+#' @description Simulates data from a two-way random effect model given by the
+#' formula A + B, where A denotes subject and B observer, as in
+#' \insertCite{christensen;textual}{loamr}.
+#' An interaction term can also be included, i.e. A + B + AB (as considered
+#' in \insertCite{christensen2025;textual}{loamr}.
 #'
 #'
 #' @param mu overall mean
@@ -19,11 +22,12 @@
 #' @return A tibble of simulated measurements. The tibble is in the format
 #' required for the 'LOAM'-function when n_sim = 1, i.e. in long format with
 #' columns 'subject', 'observer', 'measurement' (if h > 1), and 'value' (= the
-#' simulate data). When n_sim > 1, the outputted tibble contains a column for
+#' simulated data). When n_sim > 1, the outputted tibble contains a column for
 #' each of the simulated data sets, named 'value1', 'value2', etc.
 #'
 #' @references
 #' \insertRef{christensen}{loamr}
+#' \insertRef{christensen2025}{loamr}
 #'
 #' @examples
 #' simMD()
@@ -31,8 +35,8 @@
 #' LOAM(simMD())
 #'
 #' @export
-#' @importFrom MASS mvrnorm
-#' @importFrom tibble tibble
+#' @importFrom tibble tibble as_tibble
+#' @importFrom stats rnorm
 #'
 
 simMD <- function(mu = 0,
@@ -66,47 +70,36 @@ simMD <- function(mu = 0,
     }
   }
 
-  # Construct variance-covariance matrix:
   a <- n_subjects
   b <- n_observers
   h <- n_measurements
 
-  SigmaA <-
-    sigma2A * kronecker(diag(a), matrix(1, nrow = b * h, ncol = b * h))
+  # Random effects are simulated separately and combined additively
+  A_eff <- matrix(rnorm(a * n_sim, 0, sqrt(sigma2A)), nrow = a, ncol = n_sim)
+  B_eff <- matrix(rnorm(b * n_sim, 0, sqrt(sigma2B)), nrow = b, ncol = n_sim)
+  E_eff <- matrix(rnorm(a * b * h * n_sim, 0, sqrt(sigma2E)), nrow = a * b * h, ncol = n_sim)
 
-  SigmaB <-
-    sigma2B * kronecker(matrix(1, nrow = a, ncol = a),
-                        kronecker(diag(b), matrix(1, nrow = h, ncol = h)))
+  subj <- rep(1:a, each = b * h)
+  obs  <- rep(rep(1:b, each = h), times = a)
 
-  SigmaE <- sigma2E * diag(a * b * h)
-
+  sims <- mu + A_eff[subj, , drop = FALSE] + B_eff[obs, , drop = FALSE] + E_eff
 
   if(interaction){
-    SigmaAB <-
-      sigma2AB * kronecker(diag(a * b), matrix(1, ncol = h, nrow = h))
-
-    Sigma <-  SigmaA + SigmaB + SigmaAB + SigmaE
-
-  } else{
-    Sigma <-  SigmaA + SigmaB + SigmaE
+    AB_eff <- matrix(rnorm(a * b * n_sim, 0, sqrt(sigma2AB)), nrow = a * b, ncol = n_sim)
+    ab_id  <- (subj - 1) * b + obs
+    sims   <- sims + AB_eff[ab_id, , drop = FALSE]
   }
 
-  # Simulate
-  sims <- mvrnorm(n = n_sim, mu = rep(mu, a * b * h), Sigma = Sigma)
-
-  dat <- tibble(subject     = rep(1:a, each = b * h),
-                observer    = rep(rep(1:b, each = h), times = a),
+  dat <- tibble(subject     = subj,
+                observer    = obs,
                 measurement = if(!(h == 1)) rep(1:h, times = a * b) else NULL)
 
   if(n_sim == 1){
-    dat$value <- sims
+    dat$value <- as.vector(sims)
   } else{
     sim_names <- paste0("value", 1:n_sim)
-    dat[sim_names] <- as_tibble(t(sims))
+    dat[sim_names] <- as_tibble(sims, .name_repair = ~ sim_names)
   }
 
   return(dat)
 }
-
-
-

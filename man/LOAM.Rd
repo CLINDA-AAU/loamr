@@ -4,7 +4,7 @@
 \alias{LOAM}
 \title{Limits of agreement with the mean}
 \usage{
-LOAM(data, interaction = F, CI.coverage = 0.95)
+LOAM(data, interaction = F, CI.coverage = 0.95, residual.plot = F)
 }
 \arguments{
 \item{data}{a data frame containing measurement data in long format (see 'Details')}
@@ -12,19 +12,25 @@ LOAM(data, interaction = F, CI.coverage = 0.95)
 \item{interaction}{logical, indicates if subject-observer interaction should be included in the two-way random effects model}
 
 \item{CI.coverage}{coverage probability for the confidence interval on the LOAM.}
+
+\item{residual.plot}{logical, indicates if a QQ-plot of the residuals should be produced (for checking normality)}
 }
 \value{
 An object of class "loamobject".
 }
 \description{
-This function calculates estimates and confidence intervals for the
-95\% limits of agreement with the mean (LOAM) \insertCite{christensen;textual}{loamr}.
-It provides both the reproducibility LOAM and the repeatibility LOAM
-(when > 1 measurement per observer per subject).
+This function calculates estimates and confidence intervals
+for the 95\% limits of agreement with the mean (LOAM). Reproducibility
+LOAM is computed under a two-way random-effects model, either without
+subject-observer interaction as described in
+\insertCite{christensen;textual}{loamr}, or with subject-observer
+interaction as described in \insertCite{christensen2025;textual}{loamr}.
+When more than one measurement per observer per subject is available,
+the function additionally provides the repeatability LOAM introduced in
+\insertCite{christensen2025;textual}{loamr}
 }
 \details{
-The data argument requires data in long/narrow format with
-the following columns:
+The input data must be in long format with the following columns:
 
 - subject: a unique id for each subject
 
@@ -37,20 +43,24 @@ has performed multiple measurements on each subject. If only one measurement
 per observer per subject, this column is not required.
 
 
-The procedure requires balanced data, meaning that all observers must have measured
-all subjects the same number of times.
+The procedure requires balanced data, meaning that all observers must have
+measured all subjects the same number of times.
 
 The function outputs estimates and CIs for the reproducibility LOAM under a
-two-way random effects model with or without interaction. Further, estimate
-and CIs for \eqn{\sigma_A}, \eqn{\sigma_B}, \eqn{\sigma_AB} (if interaction included)
-and \eqn{\sigma_E} are supplied, where  \eqn{\sigma_A^2} is the subject variance,
-\eqn{\sigma_B^2} the observer variance, ' \eqn{\sigma_AB^2} the
-observer-sujebct interaction variance, and \eqn{\sigma_E^2} the residual variance.
-If >1 measurement per observer per subject, estimate and CI for repeatibility
-LOAM is supplied.
-If only one measurement per observer per subject, estimate and CI for the
-intra-class correlation ICC(A, 1) is supplied.
-See \insertCite{christensen;textual}{loamr} for details.
+two-way random effects model with or without interaction. Estimates and
+confidence intervals are also provided for the standard deviation components
+sigma_A, sigma_B, sigma_AB (when interaction = TRUE), and sigma_E,
+corresponding to the subject, observer, interaction, and residual variance
+components.
+
+If more than one measurement per observer per subject is available, estimate
+and CI for the repeatability LOAM are also provided.
+
+If only one measurement per observer per subject is available, estimate and
+CI for the intra-class correlation ICC(A, 1) are also supplied.
+
+See \insertCite{christensen;textual}{loamr} and
+\insertCite{christensen2025}{loamr} for details.
 }
 \examples{
 data(Borgbjerg)
@@ -66,4 +76,5 @@ L$intervals
 }
 \references{
 \insertRef{christensen}{loamr}
+\insertRef{christensen2025}{loamr}
 }

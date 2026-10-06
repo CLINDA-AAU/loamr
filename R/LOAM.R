@@ -1,13 +1,17 @@
 #' Limits of agreement with the mean
 #'
-#' @description This function calculates estimates and confidence intervals for the
-#' 95\% limits of agreement with the mean (LOAM) \insertCite{christensen;textual}{loamr}.
-#' It provides both the reproducibility LOAM and the repeatibility LOAM
-#' (when > 1 measurement per observer per subject).
-##'
+#' @description This function calculates estimates and confidence intervals
+#' for the 95\% limits of agreement with the mean (LOAM). Reproducibility
+#' LOAM is computed under a two-way random-effects model, either without
+#' subject-observer interaction as described in
+#' \insertCite{christensen;textual}{loamr}, or with subject-observer
+#' interaction as described in \insertCite{christensen2025;textual}{loamr}.
+#' When more than one measurement per observer per subject is available,
+#' the function additionally provides the repeatability LOAM introduced in
+#' \insertCite{christensen2025;textual}{loamr}
 #'
-#' @details The data argument requires data in long/narrow format with
-#' the following columns:
+#'
+#' @details The input data must be in long format with the following columns:
 #'
 #' - subject: a unique id for each subject
 #'
@@ -20,28 +24,34 @@
 #' per observer per subject, this column is not required.
 #'
 #'
-#' The procedure requires balanced data, meaning that all observers must have measured
-#' all subjects the same number of times.
+#' The procedure requires balanced data, meaning that all observers must have
+#' measured all subjects the same number of times.
 #'
 #' The function outputs estimates and CIs for the reproducibility LOAM under a
-#' two-way random effects model with or without interaction. Further, estimate
-#' and CIs for \eqn{\sigma_A}, \eqn{\sigma_B}, \eqn{\sigma_AB} (if interaction included)
-#' and \eqn{\sigma_E} are supplied, where  \eqn{\sigma_A^2} is the subject variance,
-#' \eqn{\sigma_B^2} the observer variance, ' \eqn{\sigma_AB^2} the
-#' observer-sujebct interaction variance, and \eqn{\sigma_E^2} the residual variance.
-#' If >1 measurement per observer per subject, estimate and CI for repeatibility
-#' LOAM is supplied.
-#' If only one measurement per observer per subject, estimate and CI for the
-#' intra-class correlation ICC(A, 1) is supplied.
-#' See \insertCite{christensen;textual}{loamr} for details.
+#' two-way random effects model with or without interaction. Estimates and
+#' confidence intervals are also provided for the standard deviation components
+#' sigma_A, sigma_B, sigma_AB (when interaction = TRUE), and sigma_E,
+#' corresponding to the subject, observer, interaction, and residual variance
+#' components.
+#'
+#' If more than one measurement per observer per subject is available, estimate
+#' and CI for the repeatability LOAM are also provided.
+#'
+#' If only one measurement per observer per subject is available, estimate and
+#' CI for the intra-class correlation ICC(A, 1) are also supplied.
+#'
+#' See \insertCite{christensen;textual}{loamr} and
+#' \insertCite{christensen2025}{loamr} for details.
 #'
 #'
 #' @param data a data frame containing measurement data in long format (see 'Details')
 #' @param CI.coverage coverage probability for the confidence interval on the LOAM.
 #' @param interaction logical, indicates if subject-observer interaction should be included in the two-way random effects model
+#' @param residual.plot logical, indicates if a QQ-plot of the residuals should be produced (for checking normality)
 #'
 #' @references
 #' \insertRef{christensen}{loamr}
+#' \insertRef{christensen2025}{loamr}
 #'
 #' @return An object of class "loamobject".
 #'
@@ -57,16 +67,12 @@
 #' L$intervals
 #'
 #' @export
-#' @import dplyr magrittr tibble
-#' @importFrom stats qnorm qf qchisq
+#' @import dplyr magrittr tibble ggplot2
+#' @importFrom stats qnorm qf qchisq residuals
 #' @importFrom rlang .data
 
 
-LOAM <- function(data, interaction = F, CI.coverage = 0.95) {
-
-  if (!(tibble::has_name(data, "measurement"))) {
-    data$measurement <- as.integer(1)
-  }
+LOAM <- function(data, interaction = F, CI.coverage = 0.95, residual.plot = F) {
 
   LOAM_perc <- 0.95
   z  <- abs(qnorm((1 - LOAM_perc) / 2))
@@ -75,49 +81,16 @@ LOAM <- function(data, interaction = F, CI.coverage = 0.95) {
   up <- 1 - (1 - CI.coverage) / 2
   lo <-     (1 - CI.coverage) / 2
 
-  a <- length(unique(data$subject))
-  b <- length(unique(data$observer))
-  h <- length(unique(data$measurement))
-  N <- a * b * h
+  # ANOVA sums of squares, degrees of freedom, mean squares, and LOAM point
+  # estimates: computed by .loam_components() (see LOAM_utils.R), which
+  # is also used internally by LOAM_diff_boot() when comparing two methods
+  comp <- .loam_components(data, interaction = interaction)
 
-  vA <- a - 1
-  vB <- b - 1
-
-  if(interaction){
-    if(h == 1) stop("Need >1 measurement per observer per subject when interaction = T")
-    vAB <- vA * vB
-    vE  <- N - a * b
-  } else{
-    vE <- N - a - b + 1
-  }
-
-  # Sums of squares
-  da <- data %>%
-    group_by(.data$observer) %>%
-    mutate(observerMean = mean(.data$value)) %>%
-    ungroup() %>%
-    group_by(.data$subject) %>%
-    mutate(subjectMean = mean(.data$value)) %>%
-    ungroup() %>%
-    group_by(.data$subject, .data$observer) %>%
-    mutate(subjectobserverMean = mean(.data$value)) %>%
-    ungroup %>%
-    mutate(valueMean = mean(.data$value))
-
-  SSA <- sum((da$subjectMean - da$valueMean)^2)
-  SSB <- sum((da$observerMean - da$valueMean)^2)
-  if(interaction){
-    SSAB <- sum((da$subjectobserverMean - da$valueMean)^2) - SSA - SSB
-    MSAB <- SSAB / vAB  #
-
-    SSE  <- sum((da$value - da$subjectobserverMean)^2)
-  } else{
-    SSE <- sum((da$value - da$subjectMean - da$observerMean + da$valueMean)^2)
-  }
-
-  MSE  <- SSE / vE
-  MSA  <- SSA / vA
-  MSB  <- SSB / vB
+  da <- comp$data
+  a <- comp$a; b <- comp$b; h <- comp$h; N <- comp$N
+  vA <- comp$vA; vB <- comp$vB; vAB <- comp$vAB; vE <- comp$vE
+  SSA <- comp$SSA; SSB <- comp$SSB; SSAB <- comp$SSAB; SSE <- comp$SSE
+  MSA <- comp$MSA; MSB <- comp$MSB; MSAB <- comp$MSAB; MSE <- comp$MSE
 
   # Variance estimates
   if(interaction){
@@ -140,17 +113,20 @@ LOAM <- function(data, interaction = F, CI.coverage = 0.95) {
   sigmaE <- sqrt(sigma2E)
 
   # LOAM estimates
+  # NB: repeatability (Var(Y_ijk - Y_ij.)) only needs h > 1 replicate
+  # measurements per cell - cell-mean centering removes any effect constant
+  # within a cell (subject, observer, and any true interaction) regardless
+  # of whether interaction is separately modelled. It is therefore keyed off
+  # h > 1 alone, not `interaction`. See the note above .loam_components() in
+  # LOAM_diff_utils.R for the full argument (and why LOAM_reprod's point
+  # estimate is, perhaps surprisingly, provably identical either way).
   if(h > 1){
-    LOAM_repeat <- z * sqrt((h - 1) / h * sigma2E)
+    LOAM_repeat <- comp$LOAM_repeat
   } else{
     LOAM_repeat <- NULL
   }
 
-  if(interaction){
-    LOAM_reprod <- z * sqrt((SSB + SSAB + SSE) / N)
-  } else{
-    LOAM_reprod <- z * sqrt((SSB + SSE) / N)
-  }
+  LOAM_reprod <- comp$LOAM_reprod
 
   # Reproducibility LOAM CI
   lB <- 1 - 1 / qf(up, vB, Inf)
@@ -175,7 +151,11 @@ LOAM <- function(data, interaction = F, CI.coverage = 0.95) {
                    z * sqrt((SSB + SSE + H) / N))
   }
 
-  # Repeatibility LOAM CI
+  # Repeatability LOAM CI: uses the same (branch-appropriate) SSE, vE as
+  # LOAM_repeat's point estimate above - the cell-based residual when
+  # interaction = TRUE, the pooled/reduced residual when interaction =
+  # FALSE (see the note above .loam_components() in LOAM_diff_utils.R).
+  # Only needs h > 1.
   if(h > 1){
     repeat_CI <- c(z * sqrt( (h - 1) * SSE / (h * qchisq(up, vE))),
                    z * sqrt( (h - 1) * SSE / (h * qchisq(lo, vE))))
@@ -234,6 +214,28 @@ LOAM <- function(data, interaction = F, CI.coverage = 0.95) {
     ICC       <- NULL
   }
 
+  # QQ-plot
+  p <- NULL
+  if(residual.plot){
+    if (!requireNamespace("lme4", quietly = TRUE)) {
+      stop("Package 'lme4' is required for this function. Please install it first.")
+    }
+
+    if(interaction){
+      fit <- lme4::lmer(value ~ 1 + (1 | subject * observer), data = data)
+    } else{
+      fit <- lme4::lmer(value ~ 1 + (1 | subject) + (1 | observer), data = data)
+    }
+    resid <- residuals(fit, type = "pearson")
+
+    p <-
+      ggplot2::ggplot(data.frame(resid), ggplot2::aes(sample = resid)) +
+      ggplot2::stat_qq() + ggplot2::stat_qq_line() +
+      ggplot2::labs(x = "Theoretical quantiles", y = "Sample quantiles")
+
+    print(p)
+  }
+
   estimates <- tibble(LOAM_reprod, LOAM_repeat,
                       sigmaA, sigmaB, sigmaAB, sigmaE,
                       ICC)
@@ -248,7 +250,8 @@ LOAM <- function(data, interaction = F, CI.coverage = 0.95) {
   result <- list(data        = da,
                  estimates   = estimates,
                  intervals   = intervals,
-                 CI.coverage = CI.coverage)
+                 CI.coverage = CI.coverage,
+                 qq.plot     = p)
 
   class(result) <- "loamobject"
   return(result)

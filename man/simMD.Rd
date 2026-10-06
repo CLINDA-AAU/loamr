@@ -42,12 +42,15 @@ simMD(
 A tibble of simulated measurements. The tibble is in the format
 required for the 'LOAM'-function when n_sim = 1, i.e. in long format with
 columns 'subject', 'observer', 'measurement' (if h > 1), and 'value' (= the
-simulate data). When n_sim > 1, the outputted tibble contains a column for
+simulated data). When n_sim > 1, the outputted tibble contains a column for
 each of the simulated data sets, named 'value1', 'value2', etc.
 }
 \description{
-Simulates data from a two-way random effect model given by the formula A + B, where A denotes subject and B observer, as in \insertCite{christensen;textual}{loamr}.
-An interaction term can also be included, i.e. A + B + AB.
+Simulates data from a two-way random effect model given by the
+formula A + B, where A denotes subject and B observer, as in
+\insertCite{christensen;textual}{loamr}.
+An interaction term can also be included, i.e. A + B + AB (as considered
+in \insertCite{christensen2025;textual}{loamr}.
 }
 \examples{
 simMD()
@@ -57,4 +60,5 @@ LOAM(simMD())
 }
 \references{
 \insertRef{christensen}{loamr}
+\insertRef{christensen2025}{loamr}
 }
